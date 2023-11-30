@@ -1,7 +1,10 @@
 var express = require('express');
 var router = express.Router();
 
-router.get('/', )
-router.post('/', )
+const controller = require('../controllers/roleController');
+const checkRole = require('../middlewares/checkRoleMiddleware');
+
+router.get('/', controller.getAll);
+router.post('/', checkRole(2), controller.create);
 
 module.exports = router;

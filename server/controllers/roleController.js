@@ -1,10 +1,19 @@
-class RoleController {
-    async create(res, req) {
+const {Role} = require('../models/models')
+const ApiError = require('../errors/apiError');
 
+
+class RoleController {
+    async create(req, res) {
+        const {name} = req.body;
+        const role = await Role.create({name});
+
+        return res.json(role);
     }
 
-    async getAll(res, req) {
-        
+    async getAll(req, res) {
+        const roles = await Role.findAll();
+
+        return res.json(roles);
     }
 }
 

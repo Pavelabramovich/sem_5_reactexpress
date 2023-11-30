@@ -13,6 +13,7 @@ var testAPIRouter = require('./routes/testAPI');
 var apiRouter = require('./routes/apiRouter');
 
 const cors = require('cors');
+const fileUpload = require('express-fileupload');
 
 const errorHandler = require('./middlewares/errorHandlingMiddleware');
 
@@ -27,6 +28,8 @@ app.set('view engine', 'jade');
 
 app.use(logger('dev'));
 app.use(express.json());
+app.use(express.static(path.resolve(__dirname, 'static')));
+app.use(fileUpload({}));
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
