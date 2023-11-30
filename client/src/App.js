@@ -4,6 +4,7 @@ import './App.css';
 
 import {BrowserRouter} from 'react-router-dom';
 import AppRouter from './components/AppRouter';
+import Navbar from './components/NavBar';
 
 
 const apiCall = () => {
@@ -17,8 +18,9 @@ const apiCall = () => {
 function App() {
   return (
     <BrowserRouter>
-        <AppRouter />
-      </BrowserRouter>
+      <Navbar />
+      <AppRouter />
+    </BrowserRouter>
   );
 }
 
