@@ -16,7 +16,7 @@ function checkRole(roleId) {
 
             const decoded = jsonwebtoken.verify(token, process.env.SECRET_KEY);
             if (decoded.role !== roleId) {
-                return res.status(403).json({message: "User is unauthorized"});
+                return res.status(403).json({message: "No permissions"});
             }
 
             req.user = decoded;
