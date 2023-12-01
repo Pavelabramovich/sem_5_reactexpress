@@ -13,6 +13,8 @@ class CategoryController {
     async getAll(req, res) {
         const categories = await Category.findAll();
 
+       // const category = await Category.create({name: "Oil"});
+
         return res.json(categories);
     }
 }

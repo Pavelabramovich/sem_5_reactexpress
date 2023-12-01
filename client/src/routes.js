@@ -11,7 +11,7 @@ export const authRoutes = {
 }
 
 export const publicRoutes = {
-    [SHOP_URL]: Shop,
+    [SHOP_URL]: Login,
     [LOGIN_URL]: Login,
     [REGISTRATION_URL]: Login,
     [PRODUCT_URL]: ProductDetatils,
