@@ -145,13 +145,15 @@ const colorsNamesToHex = {
 class ColorConverterMiddleware {
     static toRgb(color) {
         if (typeof color === 'string' || color instanceof String) {
+            color = color.trim();
+
             if (color.toLowerCase() in colorsNamesToHex) {
                 color = colorsNamesToHex[color];
             }
             
-            var shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
+            const shortHexRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
 
-            color = color.replace(shorthandRegex, function(m, r, g, b) {
+            color = color.replace(shortHexRegex, function(m, r, g, b) {
                 return r + r + g + g + b + b;
             });
 
@@ -160,7 +162,22 @@ class ColorConverterMiddleware {
             if (result) {
                 return [1, 2, 3].map(i => parseInt(result[i], 16));
             } else {
-                throw new Error("Incorrect string to convert.");
+                let result = /^rgb\(\s*(\d*%?)\s*,\s*(\d*%?)\s*,\s*(\d*%?)\s*\)$/.exec(color)
+                
+                if (result) {
+                    return [1, 2, 3].map(i => {
+                        let componenta = parseInt(result[i]);
+                        
+                        if (result[i].includes('%')) {
+                            componenta = Math.round(componenta * 2.55);
+                        }
+
+                        return componenta;
+                    })
+                } else {
+                    throw new Error("Incorrect string to convert: it must be hex string or color name or rgb() func.");
+                }
+                
             }
         } else if (color instanceof Array) {
             if (color.length !== 3) {
@@ -169,14 +186,13 @@ class ColorConverterMiddleware {
 
             for (let i in color) {
                 if (color[i] < 0 || 255 < color[i]) {
-                    alert(color);
                     throw new Error("Incorrect array to convert: elemenst must be in range from 0 to 255.");
                 }
             }
 
             return color
         }  else {
-            throw new Error("Incorrect argument to convert: it must be hex string or color name or rgb array.");
+            throw new Error("Incorrect argument to convert: it must be hex string or rgb() func or color name or rgb array.");
         }
     }
 

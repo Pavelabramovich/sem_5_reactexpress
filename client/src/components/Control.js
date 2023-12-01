@@ -2,42 +2,44 @@ import { useState } from "react";
 import {Component} from 'react';
 import styles from './Control.module.css';
 
-class Control extends Component {
-    constructor() {
-        super();
-        
-//        this.errorMessage = this.props?.errorMessage;
-        this.isErrorVisible = true;
-    }
-    
-    clearError() {
-        this.isErrorVisible = false;
-    }
 
-
+class InputGroup extends Component {
     render() {
-      return (
-        <div className={styles.inputContainer}>
+        return (
+            <div className={styles.inputGroup}>
+                {this.props.children}
+            </div>
+        );
+    }
+}
+
+
+class Control extends Component {
+    render() {
+        return (
             <input
                 {...this.props}
-                className={styles.inputBox}
-                onChange={ev => {this.props.isClearErrorsOnChange && this.clearError(); this.props.onChange(ev)}} 
-             />
-
-                {/* value={password}
-                placeholder="Enter your password here"
-                onChange={ev => {setPassword(ev.target.value); setPasswordError("")}} */}
-                
-            <label className={styles.errorLabel}>{this.isErrorVisible && this.props.errorMessage}</label>
-        </div>
-      );
+                className={styles.control} />
+        );
     }
 }
 
 Control.defaultProps = {
     placeholder: "Enter data here",
-    errorMessage: "Invalid data, try again",
-    clearErrorOnChange: true,
 };
 
-export default Control;
+
+class ErrorLabel extends Component {
+    render() {
+        return (
+            <label {...this.props} className={styles.errorLabel}>{this.props.children}</label>
+        );
+    }
+}
+
+
+export {
+    InputGroup,
+    Control,
+    ErrorLabel,
+}

@@ -14,9 +14,6 @@ function Button(props) {
     style['background:active'] ||= ColorConverter.subtractColors(style['background:hover'], [30, 30, 30]);
     style['color:active'] ||= style.color;
 
-    const newProps = JSON.parse(JSON.stringify(props));
-    newProps['style'] = style;
-
     const handleMouseEvent = (event) => {
         switch (event.type) {
             case "mousedown":
@@ -37,7 +34,8 @@ function Button(props) {
     
     return (
         <button
-            {...newProps}
+            {...props}
+            style={style}
             className={styles.inputButton}
 
             onMouseDown={handleMouseEvent}

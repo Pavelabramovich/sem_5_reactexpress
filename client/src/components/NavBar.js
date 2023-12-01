@@ -1,11 +1,12 @@
 import React, { useContext } from 'react';
 import { Context } from '../index';
-
+import { NavLink } from 'react-router-dom';
 
 import { useState } from 'react'
 import styles from './NavBar.module.css';
 
-import {observer} from 'mobx-react-lite';
+import { observer } from 'mobx-react-lite';
+import { SHOP_URL, LOGIN_URL } from '../utils/urls';
 
 
 
@@ -28,26 +29,28 @@ const Navbar = observer(() => {
   return (
     <header>
       <nav className={styles.navbar}>
-        <a href='#home' className={styles.logo}>Shop</a>
+        <NavLink to={SHOP_URL} className={`${styles.logo} ${styles.navLink}`}>Shop</NavLink>
 
         <ul className={`${styles.navMenu} ${isActive ? styles.active : ''}`}>
           <li onClick={removeActive}>
-            <a href='#home' className={styles.navLink}>Home</a>
+            <NavLink className={styles.navLink} to={SHOP_URL}>Home</NavLink>
           </li>
           <li onClick={removeActive}>
-            <a href='#home' className={styles.navLink}>Catalog</a>
+            <NavLink className={styles.navLink} to={SHOP_URL}>Catalog (home)</NavLink>
           </li>
           <li onClick={removeActive}>
-            <a href='#home' className={styles.navLink}>All products</a>
+            <NavLink className={styles.navLink} to={SHOP_URL}>Products (home)</NavLink>
           </li>
           <li onClick={removeActive}>
-            <a href='#home' className={styles.navLink}>Contact</a>
+            <NavLink className={styles.navLink} to={SHOP_URL}>Contect (home)</NavLink>
           </li>
 
           <li onClick={removeActive}>
             {user.isAuth
-              ? <a href='#home' className={styles.navLink}>Logout</a>
-              : <a href='#home' className={styles.navLink} onClick={() => user.setIsAuth(true)}>Login</a>
+              ? <NavLink className={styles.navLink} to={SHOP_URL}>Logout (home)</NavLink>
+              : <NavLink className={styles.navLink} to={LOGIN_URL} onClick={() => user.setIsAuth(true)}>
+                  Login
+                </NavLink>
             }
           </li>
 

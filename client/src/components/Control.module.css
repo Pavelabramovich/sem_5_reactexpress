@@ -1,4 +1,4 @@
-.inputBox {
+.control {
     height: 48px;
     width: 400px;
     font-size: large;
@@ -7,18 +7,19 @@
     padding-left: 8px;
 }
 
-.inputBox:focus-visible {
+.control:focus-visible {
     outline-color: lightblue;
 }
 
-.inputContainer > .errorLabel {
+.inputGroup > .errorLabel {
     color: red;
     font-size: 16px;
 }
 
-.inputContainer {
+.inputGroup {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     justify-content: center;
+    margin-bottom: 20px;
 }
