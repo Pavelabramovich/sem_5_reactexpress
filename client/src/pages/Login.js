@@ -14,7 +14,7 @@ const Login = (props) => {
     const [emailError, setEmailError] = useState("")
     const [passwordError, setPasswordError] = useState("")
     
-    const navigate = useNavigate();
+  //s  const navigate = useNavigate();
         
     function onButtonClick() {
         setEmailError("")
@@ -82,7 +82,7 @@ const Login = (props) => {
                 </Button>
             </InputGroup>
 
-            <p>Not registered? < NavLink className={styles.registerLink} to={REGISTRATION_URL}>Register</ NavLink></p>
+            <p>Not registered? <NavLink className={styles.registerLink} to={REGISTRATION_URL}>Register</ NavLink></p>
         </div>
     )
 }

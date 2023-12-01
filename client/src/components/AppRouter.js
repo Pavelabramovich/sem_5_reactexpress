@@ -7,12 +7,11 @@ import { Context } from '../index';
 
 
 const AppRouter = () => {
-    const {user} = useContext(Context);
-    console.log(user);
+    const {userStore} = useContext(Context);
 
     return (
         <Routes>
-            {user.isAuth && Object.entries(authRoutes).map(([path, component]) => 
+            {userStore.isAuth && Object.entries(authRoutes).map(([path, component]) => 
                 <Route key={path} path={path} Component={component} exact />
             )}
 

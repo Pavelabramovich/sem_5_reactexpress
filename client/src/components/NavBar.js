@@ -5,23 +5,19 @@ import { NavLink } from 'react-router-dom';
 import { useState } from 'react'
 import styles from './NavBar.module.css';
 
-import { observer } from 'mobx-react-lite';
 import { SHOP_URL, LOGIN_URL } from '../utils/urls';
 
 
-
-const Navbar = observer(() => {
-  // adding the states 
+const Navbar = () => {
   const [isActive, setIsActive] = useState(false);
-  const {user} = useContext(Context);
+  const [isAuth, setIsAuth] = useState(false);
+  const {userStore} = useContext(Context);
 
-  //add the active class
   const toggleActiveClass = () => {
     setIsActive(!isActive);
   };
 
 
-  //clean up function to remove the active class
   const removeActive = () => {
     setIsActive(false)
   }
@@ -46,9 +42,13 @@ const Navbar = observer(() => {
           </li>
 
           <li onClick={removeActive}>
-            {user.isAuth
+            {userStore.isAuth
               ? <NavLink className={styles.navLink} to={SHOP_URL}>Logout (home)</NavLink>
-              : <NavLink className={styles.navLink} to={LOGIN_URL} onClick={() => user.setIsAuth(true)}>
+              : <NavLink 
+                  className={styles.navLink} 
+                  to={LOGIN_URL} 
+                  onClick={function() {userStore.setIsAuth(true); setIsAuth(true);}}
+                >
                   Login
                 </NavLink>
             }
@@ -64,7 +64,7 @@ const Navbar = observer(() => {
       </nav>
     </header>
   );
-});
+};
 
 
 export default Navbar;

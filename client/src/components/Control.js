@@ -1,5 +1,4 @@
-import { useState } from "react";
-import {Component} from 'react';
+import { Component } from 'react';
 import styles from './Control.module.css';
 
 
