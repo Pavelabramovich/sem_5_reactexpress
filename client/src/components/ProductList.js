@@ -23,8 +23,10 @@ function ProductItem(props) {
             />
             <div>
                 <p>{props.product.name}</p>
-                <p>{props.product.price}</p>
-                <p>{props.product.description}</p>
+                <br/>
+                <p style={{fontWeight: 'bold'}}>${props.product.price}</p>
+                <br/>
+                <p style={{fontSize: '15px'}}>{props.product.description}</p>
             </div>
         </div>
     );

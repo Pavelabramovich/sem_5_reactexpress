@@ -72,7 +72,9 @@ const Register= () => {
 
             navigate(SHOP_URL);
         } catch (errorMessage) {
+            alert(errorMessage);
             if (typeof errorMessage === 'object' && errorMessage !== null) {
+                alert("errorMessage");
                 if (errorMessage.field === 'password') {
                     setPassword1Error(errorMessage.text)
                 } else {
@@ -92,7 +94,7 @@ const Register= () => {
             <InputGroup>
                 <Control
                     value={login}
-                    placeholder="Enter your login here"
+                    placeholder="Enter your email here"
                     onChange={ev => {setLogin(ev.target.value); setLoginError("");}} 
                 />
                 <ErrorLabel>{loginError}</ErrorLabel>

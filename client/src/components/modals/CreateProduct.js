@@ -36,7 +36,6 @@ const CreateProduct = observer((props) => {
             .then(products => {
                 productStore.setProducts(products.rows);
             });
-        alert("useEffect")
     }, [props]);
 
 

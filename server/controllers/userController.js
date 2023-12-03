@@ -32,10 +32,15 @@ class UserController {
         }
         
         const hashedPassword = await bcrypt.hash(password, 5);
-        const user = await User.create({login, password: hashedPassword, roleId: 1});
-        const token = generateJwt(user.id, login, 1);
 
-        return res.json({token})
+        try {
+            const user = await User.create({login, password: hashedPassword, roleId: 1}, { validate: true });
+            const token = generateJwt(user.id, login, 1);
+
+            return res.json({token})
+        } catch (e) {
+            return next(ApiError.badRequest(e.message));
+        }
     }
 
     async login(req, res, next) {

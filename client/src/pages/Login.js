@@ -83,7 +83,7 @@ const Login = () => {
             <InputGroup>
                 <Control
                     value={login}
-                    placeholder="Enter your login"
+                    placeholder="Enter your email"
                     onChange={ev => {setLogin(ev.target.value); setLoginError("");}} 
                 />
                 <ErrorLabel>{loginError}</ErrorLabel>
