@@ -4,6 +4,7 @@ import './index.css';
 import App from './App';
 import UserStore from './store/UserStore';
 import ProductStore from './store/ProductStore';
+import AdminStore from './store/AdminStore';
 
 
 export const Context = createContext(null);
@@ -16,6 +17,7 @@ root.render(
     <Context.Provider value={{
       userStore: new UserStore(),
       productStore: new ProductStore(),
+      adminStore: new AdminStore(),
     }}>
 
       <App />

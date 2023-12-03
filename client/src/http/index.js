@@ -12,7 +12,12 @@ const $host = axios.create({
 
 
 const $authHost = axios.create({
-    baseURL: process.env.REACT_APP_API_URL
+    baseURL: process.env.REACT_APP_API_URL,
+    withCredentials: false,
+        headers: {
+            'Access-Control-Allow-Origin' : '*',
+            'Access-Control-Allow-Methods':'GET,PUT,POST,DELETE,PATCH,OPTIONS',   
+        }
 });
 
 const authInterceptor = (config) => {

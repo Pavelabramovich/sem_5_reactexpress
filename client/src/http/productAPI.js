@@ -7,13 +7,34 @@ export const createProduct = async (product) => {
 }
 
 export const getProducts = async (categoryId) => {
-    const {data} = await $host.get('api/product', { params: {categoryId}});
+   // alert("data")
+    const res = await $host.get('api/product', { params: {categoryId}});
+    
+  //  alert("res")
+ //   console.log(res);
+
+    const {data} = res;
+  //  console.log("data")
+  //  console.log(data)
+  //  console.log(JSON.stringify(data));
     return data;
 }
 
 
 export const getProduct = async (id) => {
     const {data} = await $host.get(`api/product/${id}`);
+    return data;
+}
+
+
+export const updateProduct = async (id, product) => {
+    const {data} = await $authHost.patch(`api/product/${id}`, product);
+    return data;
+}
+
+
+export const deleteProduct = async (id) => {
+    const {data} = await $authHost.delete(`api/product/${id}`);
     return data;
 }
 

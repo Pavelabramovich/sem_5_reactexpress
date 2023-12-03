@@ -8,11 +8,16 @@ export const registration = async (login, password) => {
         localStorage.setItem('token', data.token)
         return jwtDecode(data.token);
     } catch (e) {
+       
+        let fieldError;
+
         try {
-            throw (JSON.parse(e?.response?.data?.message));
+            fieldError = JSON.parse(e?.response?.data?.message)
         } catch (jsonError) {
             throw (e?.response?.data?.message.split(':')[1] || "Incorrect format");
         }
+
+        throw fieldError;
     }
 }
 

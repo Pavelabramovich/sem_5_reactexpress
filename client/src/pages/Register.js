@@ -72,9 +72,9 @@ const Register= () => {
 
             navigate(SHOP_URL);
         } catch (errorMessage) {
-            alert(errorMessage);
+     //       alert(errorMessage);
             if (typeof errorMessage === 'object' && errorMessage !== null) {
-                alert("errorMessage");
+            //    alert("errorMessage");
                 if (errorMessage.field === 'password') {
                     setPassword1Error(errorMessage.text)
                 } else {

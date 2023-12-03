@@ -16,6 +16,9 @@ export default class ProductStore {
     }
 
     setProducts(products) {
+       // alert("set products");
+      //  alert(JSON.stringify(Object.entries(products)));
+      //  console.log(JSON.stringify(Object.entries(products)));
         this._products = products;
     }
 
@@ -24,6 +27,8 @@ export default class ProductStore {
     }
 
     get products() {
+      //  alert("get products");
+      //  alert(JSON.stringify(this._products));
         return this._products;
     }
 

@@ -31,6 +31,7 @@ const CreateRole = (props) => {
 
     function onCancel() {
         setName("");
+        setNameError("");
         setIsOpen(false);
     }
 

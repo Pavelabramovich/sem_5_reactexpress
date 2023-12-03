@@ -18,7 +18,7 @@ const CreateProduct = observer((props) => {
 
     const [name, setName] = useState("");
     const [selectedCategory, setSelectedCategory] = useState(null);
-    const [price, setPrice] = useState(null);
+    const [price, setPrice] = useState("");
     const [description, setDescription] = useState("");
     const [image, setImage] = useState("");
 
@@ -70,7 +70,7 @@ const CreateProduct = observer((props) => {
         }
 
         if (!priceError) {
-            if (price === null) {
+            if (!price) {
                 setPriceError("Enter product price");
                 isError = true;
             } else {
@@ -93,18 +93,25 @@ const CreateProduct = observer((props) => {
 
         createProduct(formData)
             .then(product => {
-                setName("");
-                setIsOpen(false);
+                onCancel();
             })
             .catch(e => {
                 setNameError("Product with this name already exists");
-                console.log(e);
+                //console.log(e);
             });
     }
 
     function onCancel() {
         setName("");
         setSelectedCategory(null);
+        setPrice(0);
+        setDescription("");
+        setImage("");
+
+        setNameError("");
+        setCategoryError("");
+        setPriceError("");
+
         setIsOpen(false);
     }
     
@@ -149,7 +156,7 @@ const CreateProduct = observer((props) => {
                     <InputGroup style={{marginTop: '20px'}}>
                         <Control
                             type="number"
-                            min="0" max="1000" 
+                            min="1" max="1000" 
                             placeholder="Enter price for new product"
                             onChange={ev => { setPrice(+ev.target.value); setPriceError("")}} 
                         />
@@ -186,10 +193,3 @@ const CreateProduct = observer((props) => {
 });
 
 export default CreateProduct;
-
-
-// name: {type: DataTypes.STRING, unique: true},    
-
-// description: {type: DataTypes.STRING, allowNull: false},    
-// price: {type: DataTypes.INTEGER, allowNull: false},
-// img: {type: DataTypes.STRING, allowNull: false},

@@ -36,7 +36,7 @@ function ProductItem(props) {
 const ProductList = observer(() => {
     const {productStore} = useContext(Context);
     const products = productStore.products;
-
+    
     return (
         <div style={{display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)'}}>
             {products.map(p => 

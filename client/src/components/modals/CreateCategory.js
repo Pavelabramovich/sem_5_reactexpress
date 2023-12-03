@@ -30,6 +30,7 @@ const CreateCategory = (props) => {
 
     function onCancel() {
         setName("");
+        setNameError("");
         setIsOpen(false);
     }
 
