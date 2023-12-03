@@ -26,7 +26,7 @@ const App = observer(() => {
         })
         .catch(e => console.error(e))
         .finally(() => setLoading(false));
-    }, 1000)
+    }, 10)
   },[])
 
   if (loading) {

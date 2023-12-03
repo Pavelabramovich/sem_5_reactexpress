@@ -3,6 +3,7 @@ import { useState } from 'react'
 import Modal from './Modal';
 import Button from '../Button';
 import { InputGroup, Control, ErrorLabel } from '../Control';
+import { createCategory } from "../../http/productAPI";
 
 
 const CreateCategory = (props) => {
@@ -13,10 +14,18 @@ const CreateCategory = (props) => {
     const [nameError, setNameError] = useState("");
 
     function onAdd() {
-        setName("");
-        setIsOpen(false);
+        if (name === "") {
+            setNameError("Enter category name");
+        }
 
-        ///adding..
+        createCategory(name)
+            .then(category => {
+                setName("");
+                setIsOpen(false);
+            })
+            .catch(e => {
+                setNameError("Category with this name already exists");
+            });
     }
 
     function onCancel() {
@@ -58,5 +67,3 @@ const CreateCategory = (props) => {
 
 
 export default CreateCategory;
-
-

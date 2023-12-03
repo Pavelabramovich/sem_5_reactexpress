@@ -2,20 +2,20 @@
     margin: 10px;
     padding: 10px;
     border: 1px solid #bbb;
-    background-color: #eee;
+    background-color: white;
 
-    border-radius: 10px;
+    border-radius: 25px;
     cursor: pointer;
     
     transition: color .17s ease-in-out, background-color .17s ease-in-out, border-color .17s ease-in-out, box-shadow .17s ease-in-out;
 }
 
 .productItem:hover {
-    background-color: #ccc;
+    background-color: #eee;
 }
 
 .productItem:active {
-    background-color: #aaa;
+    background-color: #ccc;
 }
   
 .productItem span {

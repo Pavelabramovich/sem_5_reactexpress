@@ -1,14 +1,15 @@
 import styles from "./CreateProduct.module.css";
-import { useState } from 'react'
+import { useState, useContext, useEffect } from 'react';
 import Modal from './Modal';
 import Button from '../Button';
 import Dropdown from '../Dropdown';
 import { InputGroup, Control, ErrorLabel, TextControl } from '../Control';
 import { Context } from '../../index';
-import { useContext } from 'react';
+import { getCategories, getProducts,  createProduct } from '../../http/productAPI';
+import { observer } from 'mobx-react-lite';
 
 
-const CreateProduct = (props) => {
+const CreateProduct = observer((props) => {
     const {productStore} = useContext(Context);
     const categories = productStore.categories;
 
@@ -17,17 +18,89 @@ const CreateProduct = (props) => {
 
     const [name, setName] = useState("");
     const [selectedCategory, setSelectedCategory] = useState(null);
-    const [price, setPrice] = useState(0);
-    const [descriptionq, setDescription] = useState("");
+    const [price, setPrice] = useState(null);
+    const [description, setDescription] = useState("");
     const [image, setImage] = useState("");
 
     const [nameError, setNameError] = useState("");
+    const [categoryError, setCategoryError] = useState("");
+    const [priceError, setPriceError] = useState("");
+
+    useEffect(() => {
+        getCategories()
+            .then(categories => {
+                productStore.setCategories(categories);
+            });
+
+        getProducts()
+            .then(products => {
+                productStore.setProducts(products.rows);
+            });
+        alert("useEffect")
+    }, [props]);
+
+
+    const selectFile = (e) => {
+        setImage(e.target.files[0]);
+    }
+
 
     function onAdd() {
-        setName("");
-        setIsOpen(false);
+        var isError = false;
 
-        ///adding..
+        if (!nameError) {
+            if (name === "") {
+                setNameError("Enter product name");
+                isError = true;
+            } else {
+                setNameError("");
+            }
+        } else {
+            isError = true;
+        }
+
+        if (!categoryError) {
+            if (selectedCategory === null) {
+                setCategoryError("Select category");
+                isError = true;
+            } else {
+                setCategoryError("");
+            }
+        } else {
+            isError = true;
+        }
+
+        if (!priceError) {
+            if (price === null) {
+                setPriceError("Enter product price");
+                isError = true;
+            } else {
+                setPriceError("");
+            }
+        } else {
+            isError = true;
+        }
+
+        if (isError) {
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append('name', name);
+        formData.append('categoryId', `${selectedCategory.id}`);
+        formData.append('price', `${price}`);
+        formData.append('description', description);
+        formData.append('img', image);
+
+        createProduct(formData)
+            .then(product => {
+                setName("");
+                setIsOpen(false);
+            })
+            .catch(e => {
+                setNameError("Product with this name already exists");
+                console.log(e);
+            });
     }
 
     function onCancel() {
@@ -54,27 +127,34 @@ const CreateProduct = (props) => {
                         <ErrorLabel>{nameError}</ErrorLabel>
                     </InputGroup>
 
-                    <Dropdown
-                        trigger={<Control
-                            value={selectedCategory?.name ?? ''}
-                            placeholder="Select product category"
-                            readOnly={true}
-                            style={{cursor: 'pointer'}} 
-                        />}
+                    <InputGroup>
+                        <Dropdown
+                            trigger={<Control
+                                value={selectedCategory?.name ?? ''}
+                                placeholder="Select product category"
+                                readOnly={true}
+                                style={{cursor: 'pointer'}} 
+                            />}
 
-                        menu={categories.map(c => {
-                            return <button onClick={() => setSelectedCategory(c)}>{c.name}</button>
-                        })}
-                    />
+                            menu={productStore.categories.map(c => {
+                                return (
+                                    <button onClick={() => { setSelectedCategory(c); setCategoryError("")}}>
+                                        {c.name}
+                                    </button>
+                                )
+                            })}
+                        />
+                        <ErrorLabel>{categoryError}</ErrorLabel>
+                    </InputGroup>
 
                     <InputGroup style={{marginTop: '20px'}}>
                         <Control
                             type="number"
                             min="0" max="1000" 
-                            value={price}
                             placeholder="Enter price for new product"
-                            onChange={ev => setPrice(ev.target.value)} 
+                            onChange={ev => { setPrice(+ev.target.value); setPriceError("")}} 
                         />
+                        <ErrorLabel>{priceError}</ErrorLabel>
                     </InputGroup>
 
                     <TextControl
@@ -85,9 +165,8 @@ const CreateProduct = (props) => {
                     <InputGroup style={{marginTop: '20px'}}>
                         <Control
                             type="file"
-                            value={image}
                             placeholder="Select product image"
-                            onChange={ev => setImage(ev.target.value)} 
+                            onChange={ev => {setImage(ev.target.value); selectFile(ev)}} 
                         />
                     </InputGroup>
 
@@ -105,7 +184,7 @@ const CreateProduct = (props) => {
             </div>
         </Modal>
     )
-}
+});
 
 export default CreateProduct;
 

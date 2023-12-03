@@ -1,28 +1,29 @@
-import { $host } from './index';
+import { $host, $authHost } from './index';
 
 
-export const registration = async (login, password) => {
-    try {
-        const {data} = await $host.post('api/user/registration', {login, password, role: 2});
-        return jwtDecode(data.token);
-    } catch (e) {
-        throw (e?.response?.data?.message || "Unexpected error");
-    }
+export const createProduct = async (product) => {
+    const {data} = await $authHost.post('api/product', product);
+    return data;
 }
 
-export const login = async (login, password) => {
-    try {
-        const {data} = await $host.post('api/user/login', {login, password});
-        return jwtDecode(data.token);
-    } catch (e) {
-        throw (e?.response?.data?.message || "Unexpected error");
-    }
+export const getProducts = async (categoryId) => {
+    const {data} = await $host.get('api/product', { params: {categoryId}});
+    return data;
 }
 
 
-export const check = async () => {
-    const {data} = await $authHost.get('api/user/auth');
+export const getProduct = async (id) => {
+    const {data} = await $host.get(`api/product/${id}`);
+    return data;
+}
 
-    localStorage.setItem('token', data.token)
-    return jwtDecode(data.token);
+
+export const createCategory = async (name) => {
+    const {data} = await $authHost.post('api/category', {name});
+    return data;
+}
+
+export const getCategories = async () => {
+    const {data} = await $host.get('api/category');
+    return data;
 }

@@ -14,7 +14,7 @@ class ProductController {
             const filename = uuid.v4() + '.jpg';
             img.mv(path.resolve(__dirname, '..', 'static', filename));
 
-            const product = await Product.create({name, description, price, categoryId, img});
+            const product = await Product.create({name, description, price, categoryId, img: filename});
 
             return res.json(product);
         } catch (e) {
@@ -25,8 +25,8 @@ class ProductController {
     async getAll(req, res) {
         let {categoryId, limit, page} = req.query;
 
-        page ??= 0;
-        limit ??= 10;
+        page ||= 0;
+        limit = 100;
 
         const offset = page * limit;
         
@@ -43,8 +43,9 @@ class ProductController {
 
     async getById(req, res) {
         const {id} = req.params;
-        
+ 
         const product = await Product.findOne({where:{id}});
+        return res.json(product)
     }
 }
 

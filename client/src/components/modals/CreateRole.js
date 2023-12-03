@@ -4,6 +4,8 @@ import Modal from './Modal';
 import Button from '../Button';
 import { InputGroup, Control, ErrorLabel } from '../Control';
 
+import { createRole } from "../../http/userAPI";
+
 
 const CreateRole = (props) => {
     const isOpen = props.isOpen;
@@ -13,10 +15,18 @@ const CreateRole = (props) => {
     const [nameError, setNameError] = useState("");
 
     function onAdd() {
-        setName("");
-        setIsOpen(false);
+        if (name === "") {
+            setNameError("Enter category name");
+        }
 
-        ///adding..
+        createRole(name)
+            .then(role => {
+                setName("");
+                setIsOpen(false);
+            })
+            .catch(e => {
+                setNameError("Role with this name already exists");
+            });
     }
 
     function onCancel() {

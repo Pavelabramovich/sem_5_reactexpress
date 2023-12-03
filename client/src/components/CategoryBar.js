@@ -2,6 +2,8 @@ import React, { useContext } from 'react';
 import styles from './CategoryBar.module.css';
 import { Context } from '../index';
 import useForceUpdate from '../utils/useForceUpdate';
+import { observer } from 'mobx-react-lite';
+
 
 
 function CategoryItem(props) {
@@ -13,7 +15,7 @@ function CategoryItem(props) {
 }
 
 
-const CategoryBar = (props) => {
+const CategoryBar = observer(() => {
     const {productStore} = useContext(Context);
     const categories = productStore.categories;
 
@@ -34,6 +36,6 @@ const CategoryBar = (props) => {
             </div> 
         </div>
     ); 
-}
+});
 
 export default CategoryBar;

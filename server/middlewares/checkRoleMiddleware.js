@@ -15,7 +15,8 @@ function checkRole(roleId) {
             }
 
             const decoded = jsonwebtoken.verify(token, process.env.SECRET_KEY);
-            if (decoded.role !== roleId) {
+
+            if (decoded.roleId !== roleId) {
                 return res.status(403).json({message: "No permissions"});
             }
 

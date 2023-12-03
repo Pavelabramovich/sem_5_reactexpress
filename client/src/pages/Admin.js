@@ -3,10 +3,11 @@ import CreateCategory from "../components/modals/CreateCategory";
 import CreateProduct from "../components/modals/CreateProduct";
 import CreateRole from "../components/modals/CreateRole";
 import React, { useState } from "react";
+import { observer } from 'mobx-react-lite';
 
 import styles from './Admin.module.css';
 
-const Admin = () => {
+const Admin = observer(() => {
     const [isProductCreating, setIsProductCreating] = useState(false);
     const [isCategoryCreating, setIsCategoryCreating] = useState(false);
     const [isRoleCreating, setIsRoleCreating] = useState(false);
@@ -14,7 +15,7 @@ const Admin = () => {
     return (
         <div style={{display: 'flex', padding: '5px'}}>
             <div style={{width: 'calc(100% /4)'}}>
-                <Button style={{width: '95%', background: 'cornflowerblue'}} onClick={() => setIsProductCreating(true)}>
+                <Button style={{width: '95%', background: 'cornflowerblue'}} onClick={() => {setIsProductCreating(false);setIsProductCreating(true)}}>
                     Add product
                 </Button>
                 <Button style={{width: '95%', background: '#A419F2'}} onClick={() => setIsCategoryCreating(true)}>
@@ -34,6 +35,6 @@ const Admin = () => {
             </div>
         </div>
     )
-}
+});
 
 export default Admin;

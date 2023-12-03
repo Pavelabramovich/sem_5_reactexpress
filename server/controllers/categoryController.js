@@ -3,8 +3,15 @@ const ApiError = require('../errors/apiError');
 
 
 class CategoryController {
-    async create(req, res) {
+    async create(req, res, next) {
         const {name} = req.body;
+
+        const categoryWithSameName = await Category.findOne({where:{name}});
+
+        if (categoryWithSameName) {
+            return next(ApiError.badRequest("Category with same name already exists."));
+        }
+
         const category = await Category.create({name});
 
         return res.json(category);
@@ -12,9 +19,6 @@ class CategoryController {
 
     async getAll(req, res) {
         const categories = await Category.findAll();
-
-       // const category = await Category.create({name: "Oil"});
-
         return res.json(categories);
     }
 }
