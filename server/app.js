@@ -47,9 +47,11 @@ app.use(function(req, res, next) {
 });
 
 // error handler
-app.use(function(err, req, res, next) {
-  res.render('error', errorHandler(err));
-});
+// app.use(function(err, req, res, next) {
+//   res.render('error', errorHandler(err, req, res, next));
+// });
+
+app.use(errorHandler);
 
 
 module.exports = app;

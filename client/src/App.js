@@ -1,27 +1,44 @@
-import logo from './logo.svg';
-import axios from 'axios';
 import './App.css';
 
-import {BrowserRouter} from 'react-router-dom';
+import { BrowserRouter } from 'react-router-dom';
 import AppRouter from './components/AppRouter';
+
 import Navbar from './components/NavBar';
+import { observer } from 'mobx-react-lite';
+
+import { Context } from './index';
+import { useContext, useState, useEffect } from 'react';
+import { check } from './http/userAPI';
 
 
-const apiCall = () => {
-  axios.get('http://localhost:3001/testAPI')
-    .then((data) => {
-      console.log(data)
-    })
-}
 
+const App = observer(() => {
+  const {userStore} = useContext(Context);
+  const [loading, setLoading] = useState(true);
 
-function App() {
+  
+  useEffect(() => {
+    setTimeout(() => {
+      check()
+        .then(data => {
+          userStore.setUser(true);
+          userStore.setIsAuth(true);
+        })
+        .catch(e => console.error(e))
+        .finally(() => setLoading(false));
+    }, 1000)
+  },[])
+
+  if (loading) {
+    return <p>Loading...</p>
+  }
+
   return (
     <BrowserRouter>
       <Navbar />
       <AppRouter />
     </BrowserRouter>
   );
-}
+});
 
 export default App;

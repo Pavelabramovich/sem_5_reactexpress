@@ -1,63 +1,87 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import Button from '../components/Button';
+import { Context } from '../index';
 import { InputGroup, Control, ErrorLabel } from '../components/Control';
 import { NavLink } from 'react-router-dom';
 
 import styles from './Register.module.css';
-import { LOGIN_URL } from "../utils/urls";
+import { LOGIN_URL, SHOP_URL } from "../utils/urls";
+import { registration as registerUser } from "../http/userAPI";
 
 
 const Register= () => {
-    const [email, setEmail] = useState("")
+    const [login, setLogin] = useState("")
     const [password1, setPassword1] = useState("")
     const [password2, setPassword2] = useState("")
 
-
-    const [emailError, setEmailError] = useState("")
+    const [loginError, setLoginError] = useState("")
     const [password1Error, setPassword1Error] = useState("")
     const [password2Error, setPassword2Error] = useState("")
-    
-   // const navigate = useNavigate();
+
+    const {userStore} = useContext(Context);
+
+    const navigate = useNavigate();
         
-    function onButtonClick() {
-        setEmailError("")
-        setPassword1Error("")
-        setPassword2Error("")
+    async function onRegister() {
+        var isError = false;
 
-        let isError = false;
-
-        if ("" === email) {
-            setEmailError("Please enter your email")
+        if (!loginError) {
+            if ("" === login) {
+                setLoginError("Please enter your login");
+                isError = true;
+            } else if (login.length < 8) {
+                setLoginError("The login must be 8 characters or longer");
+                isError = true;
+            } else {
+                setLoginError("");
+            }
+        } else {
             isError = true;
         }
 
-        if (!/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(email)) {
-            setEmailError("Please enter a valid email")
-            isError = true;
-        }
-
-        if ("" === password1) {
-            setPassword1Error("Please enter a password")
-            isError = true;
-        }
-
-        if (password1.length < 7) {
-            setPassword1Error("The password must be 8 characters or longer")
-            isError = true;
-        }
-
-        if (password1 !== password2) {
-            setPassword1Error("The password are not the same")
+        if (!password1Error) {
+            if (password1 === "") {
+                setPassword1Error("Please enter a password")
+                isError = true;
+            } else if (password1.length < 8) {
+                setPassword1Error("The password must be 8 characters or longer")
+                isError = true;
+            } else if (password2 === "") {
+                setPassword2Error("Please confirm the password")
+                isError = true;
+            } else if (password1 !== password2) {
+                setPassword2Error("The passwords are not the same")
+                isError = true;
+            } else {
+                setPassword1Error("");
+                setPassword2Error("");
+            }
+        } else {
             isError = true;
         }
 
         if (isError) {
             return;
         }
-
-        // Authentication calls will be made here...       
         
+        try {
+            const user = await registerUser(login, password1);
+            userStore.setUser(user);
+            userStore.setIsAuth(true);
+
+            navigate(SHOP_URL);
+        } catch (errorMessage) {
+            if (typeof errorMessage === 'object' && errorMessage !== null) {
+                if (errorMessage.field === 'password') {
+                    setPassword1Error(errorMessage.text)
+                } else {
+                    setLoginError(errorMessage.text)
+                }
+            } else {
+                setLoginError(errorMessage);
+            }
+        }
     }
 
     return (
@@ -67,11 +91,11 @@ const Register= () => {
             </div> 
             <InputGroup>
                 <Control
-                    value={email}
-                    placeholder="Enter your email here"
-                    onChange={ev => {setEmail(ev.target.value); setEmailError("");}} 
+                    value={login}
+                    placeholder="Enter your login here"
+                    onChange={ev => {setLogin(ev.target.value); setLoginError("");}} 
                 />
-                <ErrorLabel>{emailError}</ErrorLabel>
+                <ErrorLabel>{loginError}</ErrorLabel>
             </InputGroup>
             <InputGroup>
                 <Control
@@ -86,7 +110,7 @@ const Register= () => {
                 <Control
                     value={password2}
                     type="password"
-                    placeholder="Cpnfirm password"
+                    placeholder="Confirm password"
                     onChange={ev => {setPassword2(ev.target.value); setPassword2Error("");}} 
                 />
                 <ErrorLabel>{password2Error}</ErrorLabel>
@@ -95,7 +119,7 @@ const Register= () => {
             <InputGroup>
                 <Button
                     style={{ background: '#F4a0b5' }}
-                    onClick={onButtonClick}
+                    onClick={onRegister}
                 >
                     Register
                 </Button>

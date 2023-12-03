@@ -5,8 +5,10 @@ import { publicRoutes } from '../routes';
 import { SHOP_URL } from '../utils/urls';
 import { Context } from '../index';
 
+import { observer } from 'mobx-react-lite';
 
-const AppRouter = () => {
+
+const AppRouter = observer(() => {
     const {userStore} = useContext(Context);
 
     return (
@@ -22,6 +24,6 @@ const AppRouter = () => {
             <Route path='*' Component={publicRoutes[SHOP_URL]} />
         </Routes>
     );
-}
+});
 
 export default AppRouter;

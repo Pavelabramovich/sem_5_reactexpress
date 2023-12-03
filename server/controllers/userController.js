@@ -16,22 +16,24 @@ function generateJwt(id, login, roleId) {
 
 class UserController {
     async register(req, res, next) {
-        const {login, password, roleId} = req.body;
-
-        roleId ??= 1;
-
-        if (!email || !password) {
-            next(ApiError.badRequest("Incorrect login or password"));
+        const {login, password} = req.body;
+        const fields = {login, password};
+        
+        for (let field in fields) {
+            if (!fields[field]) {  
+                return next(ApiError.badRequest(JSON.stringify({field: fields[field], text: `${field} is empty`})));
+            }
         }
+        
+        const userWithSameLogin = await User.findOne({where:{login}});
 
-        const candidate = await User.findOne({where:{login}});
-        if (candidate) {
-            next(ApiError.badRequest("User with this login already exists"));
+        if (userWithSameLogin) {
+            return next(ApiError.badRequest(JSON.stringify({field: 'login', text: "User with same login already exists."})));
         }
-
+        
         const hashedPassword = await bcrypt.hash(password, 5);
-        const user = await User.create({login, roleId, password: hashedPassword});
-        const token = generateJwt(user.id, login, roleId);
+        const user = await User.create({login, password: hashedPassword, roleId: 1});
+        const token = generateJwt(user.id, login, 1);
 
         return res.json({token})
     }
@@ -42,15 +44,15 @@ class UserController {
         const user = await User.findOne({where: {login}});
 
         if (!user) {
-            return next(ApiError.badRequest("User with this email does not exist"));
+            return next(ApiError.badRequest(JSON.stringify({field: 'login', text: "User with this login does not exist"})));
         }
 
         const comparePasswords = bcrypt.compareSync(password, user.password);
         if (!comparePasswords) {
-            return next(ApiError.badRequest("Incorrect password"));
+            return next(ApiError.badRequest(JSON.stringify({field: 'password', text: "Incorrect password"})));
         }
 
-        const token = generateJwt(user.id, login, password);
+        const token = generateJwt(user.id, login, user.roleId);
 
         return res.json({token});
     }
@@ -58,8 +60,8 @@ class UserController {
     async isAuthorized(req, res, next) {
         const {id, login, roleId} = req.body;
 
-        if (!email || !password || !roleId) {
-            next(ApiError.badRequest("Incorrect login or password or role id"));
+        if (!id || !login || !roleId) {
+            return next(ApiError.badRequest("Incorrect id or login or role id"));
         }
 
         const token = generateJwt(id, login, roleId);

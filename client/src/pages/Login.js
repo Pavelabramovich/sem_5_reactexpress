@@ -1,53 +1,78 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import Button from '../components/Button';
+import { Context } from '../index';
 import { InputGroup, Control, ErrorLabel } from '../components/Control';
 import { NavLink } from 'react-router-dom';
 
 import styles from './Login.module.css';
-import { REGISTRATION_URL } from "../utils/urls";
+import { REGISTRATION_URL, SHOP_URL } from "../utils/urls";
+import { login as loginUser } from "../http/userAPI";
 
 
-const Login = (props) => {
-    const [email, setEmail] = useState("")
+const Login = () => {
+    const [login, setLogin] = useState("")
     const [password, setPassword] = useState("")
-    const [emailError, setEmailError] = useState("")
+
+    const [loginError, setLoginError] = useState("")
     const [passwordError, setPasswordError] = useState("")
+
+    const {userStore} = useContext(Context);
     
-  //s  const navigate = useNavigate();
+    const navigate = useNavigate();
         
-    function onButtonClick() {
-        setEmailError("")
-        setPasswordError("")
+    async function onLogin() {
+        var isError = false;
 
-        let isError = false;
-
-        if ("" === email) {
-            setEmailError("Please enter your email")
+        if (!loginError) {
+            if (login === "") {
+                setLoginError("Please enter your login")
+                isError = true;
+            } else if (login.length < 8) {
+                setLoginError("Invalid login")
+                isError = true;
+            } else {
+                setLoginError("")
+            }
+        } else {
             isError = true;
         }
 
-        if (!/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(email)) {
-            setEmailError("Please enter a valid email")
-            isError = true;
-        }
-
-        if ("" === password) {
-            setPasswordError("Please enter a password")
-            isError = true;
-        }
-
-        if (password.length < 7) {
-            setPasswordError("The password must be 8 characters or longer")
+        if (!passwordError) {
+            if (password === "") {
+                setPasswordError("Please enter a password")
+                isError = true;
+            } else if (password.length < 8) {
+                setPasswordError("Invalid password")
+                isError = true;
+            } else {
+                setPasswordError("")
+            }
+        } else {
             isError = true;
         }
 
         if (isError) {
             return;
         }
-
-        // Authentication calls will be made here...       
         
+        try {
+            const user = await loginUser(login, password); 
+            userStore.setUser(user);
+            userStore.setIsAuth(true);
+
+            navigate(SHOP_URL);
+        } catch (errorMessage) {
+            if (typeof errorMessage === 'object' && errorMessage !== null) {
+                if (errorMessage.field === 'password') {
+                    setPasswordError(errorMessage.text)
+                } else {
+                    setLoginError(errorMessage.text)
+                }
+            } else {
+                setLoginError(JSON.stringify(errorMessage));
+            }
+        }
     }
 
     return (
@@ -57,17 +82,17 @@ const Login = (props) => {
             </div> 
             <InputGroup>
                 <Control
-                    value={email}
-                    placeholder="Enter your email here"
-                    onChange={ev => {setEmail(ev.target.value); setEmailError("");}} 
+                    value={login}
+                    placeholder="Enter your login"
+                    onChange={ev => {setLogin(ev.target.value); setLoginError("");}} 
                 />
-                <ErrorLabel>{emailError}</ErrorLabel>
+                <ErrorLabel>{loginError}</ErrorLabel>
             </InputGroup>
             <InputGroup>
                 <Control
                     value={password}
                     type="password"
-                    placeholder="Enter your password here"
+                    placeholder="Enter your password"
                     onChange={ev => {setPassword(ev.target.value); setPasswordError("");}} 
                 />
                 <ErrorLabel>{passwordError}</ErrorLabel>
@@ -76,7 +101,7 @@ const Login = (props) => {
             <InputGroup>
                 <Button
                     style={{ background: '#F4a0b5' }}
-                    onClick={onButtonClick}
+                    onClick={onLogin}
                 >
                     Log in
                 </Button>

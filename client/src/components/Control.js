@@ -5,7 +5,7 @@ import styles from './Control.module.css';
 class InputGroup extends Component {
     render() {
         return (
-            <div className={styles.inputGroup}>
+            <div className={styles.inputGroup} {...this.props}>
                 {this.props.children}
             </div>
         );
@@ -23,7 +23,19 @@ class Control extends Component {
     }
 }
 
-Control.defaultProps = {
+
+class TextControl extends Component {
+    render() {
+        return (
+            <textarea
+                {...this.props}
+                className={styles.textControl} />
+        );
+    }
+}
+
+
+Control.defaultProps = TextControl.defaultProps = {
     placeholder: "Enter data here",
 };
 
@@ -41,4 +53,5 @@ export {
     InputGroup,
     Control,
     ErrorLabel,
+    TextControl,
 }

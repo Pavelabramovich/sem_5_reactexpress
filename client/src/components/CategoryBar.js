@@ -3,8 +3,6 @@ import styles from './CategoryBar.module.css';
 import { Context } from '../index';
 import useForceUpdate from '../utils/useForceUpdate';
 
-import {observer} from 'mobx-react-lite';
-
 
 function CategoryItem(props) {
     return (
@@ -23,7 +21,7 @@ const CategoryBar = (props) => {
    
     return (
         <div style={{textAlign: 'center'}}>
-            <h2>Categories</h2>
+            <h1 style={{fontSize: '20px', fontWeight: 'bold', marginTop: '8px'}}>Categories</h1>
 
             <div>
                 {categories.map(c => 
@@ -31,7 +29,7 @@ const CategoryBar = (props) => {
                         selected={c.id === productStore.selectedCategory?.id}
                         key={c.id} 
                         name={c.name} 
-                        onClick={() => { productStore.selectCategory(c); forceUpdate();}} />
+                        onClick={() => { productStore.selectCategory(c); forceUpdate(); }} />
                 )}
             </div> 
         </div>

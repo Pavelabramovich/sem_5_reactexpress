@@ -2,13 +2,15 @@ import React, { useContext } from 'react';
 import { Context } from '../index';
 import { NavLink } from 'react-router-dom';
 
+import { observer } from 'mobx-react-lite';
+
 import { useState } from 'react'
 import styles from './NavBar.module.css';
 
-import { SHOP_URL, LOGIN_URL } from '../utils/urls';
+import { SHOP_URL, LOGIN_URL, ADMIN_URL } from '../utils/urls';
 
 
-const Navbar = () => {
+const Navbar = observer(() => {
   const [isActive, setIsActive] = useState(false);
   const [isAuth, setIsAuth] = useState(false);
   const {userStore} = useContext(Context);
@@ -17,10 +19,15 @@ const Navbar = () => {
     setIsActive(!isActive);
   };
 
-
   const removeActive = () => {
     setIsActive(false)
   }
+
+  const logOut = () => {
+    userStore.setUser(null);
+    userStore.setIsAuth(false);
+  }
+
 
   return (
     <header>
@@ -37,23 +44,21 @@ const Navbar = () => {
           <li onClick={removeActive}>
             <NavLink className={styles.navLink} to={SHOP_URL}>Products (home)</NavLink>
           </li>
-          <li onClick={removeActive}>
-            <NavLink className={styles.navLink} to={SHOP_URL}>Contect (home)</NavLink>
-          </li>
 
-          <li onClick={removeActive}>
-            {userStore.isAuth
-              ? <NavLink className={styles.navLink} to={SHOP_URL}>Logout (home)</NavLink>
-              : <NavLink 
-                  className={styles.navLink} 
-                  to={LOGIN_URL} 
-                  onClick={function() {userStore.setIsAuth(true); setIsAuth(true);}}
-                >
-                  Login
-                </NavLink>
-            }
-          </li>
+          {userStore.isAuth &&
+            <li onClick={removeActive}>
+              <NavLink className={styles.navLink} to={ADMIN_URL}>Admin</NavLink>
+            </li>
+          }
 
+          {userStore.isAuth
+            ? <li onClick={removeActive}>
+                <NavLink className={styles.navLink} to={SHOP_URL} onClick={logOut}>Logout</NavLink>
+              </li>
+            : <li onClick={removeActive}>
+                <NavLink className={styles.navLink} to={LOGIN_URL}>Login</NavLink>
+              </li>
+          }
         </ul>
 
         <div className={`${styles.hamburger} ${isActive ? styles.active : ''}`}  onClick={toggleActiveClass}>
@@ -64,7 +69,7 @@ const Navbar = () => {
       </nav>
     </header>
   );
-};
+});
 
 
 export default Navbar;
