@@ -52,11 +52,5 @@ export const getRoles = async () => {
 
 export const getTime = async () => {
     const {data} = await $authHost.get('api/user/time');
-
-
-    
-    alert(JSON.stringify(data[0]));
-  
-
     return [data[0], data[1]];
 }

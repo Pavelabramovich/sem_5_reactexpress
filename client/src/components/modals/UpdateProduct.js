@@ -89,8 +89,6 @@ const UpdateProduct = observer((props) => {
             formData.append('img', image);
         }
 
-        alert(product.id, formData)
-
         updateProduct(product.id, formData)
             .then(newProduct => {
                 if (props.reload) {

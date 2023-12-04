@@ -6,10 +6,8 @@ export const createProduct = async (product) => {
         const {data} = await $authHost.post('api/product', product);
         return data;
     } catch (e) {
-        alert(e);
         console.log(e);
         console.log(JSON.stringify(e));
-
 
         let fieldError;
 

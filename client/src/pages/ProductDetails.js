@@ -35,7 +35,7 @@ const ProductDetails = () => {
                 
             </div>
 
-            <div style={{width: 'calc(100% /2)', background: 'yellow'}}>
+            <div style={{width: 'calc(100% /2)'}}>
                 <div style={{padding: '25px'}}>
                     <h1 style={{marginBottom: '45px'}}>{product.name}</h1>
                     <div style={{fontSize: '25px', marginBottom: '35px', wordBreak: 'break-all'}}>

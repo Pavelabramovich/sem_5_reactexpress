@@ -38,7 +38,7 @@ class ProductController {
                 return next(ApiError.badRequest(JSON.stringify({field: 'name', text: "Product with same name already exists."})));
             }
 
-            const product = await Product.create({name, description, price, categoryId, img: fname});
+            const product = await ProductRepository.create({name, description, price, categoryId, img: fname});
 
             return res.json(product);
         } catch (e) {
@@ -49,20 +49,8 @@ class ProductController {
     async getAll(req, res) {
         let {categoryId} = req.query;
 
-        const options = {}
-
-        let products; 
-
-        products = await ProductRepository.getAll(categoryId);
+        let products = await ProductRepository.getAll(categoryId);
         products = {rows: products};
-
-        // if (categoryId) {
-        //     options['where'] = {categoryId};
-        //     products = await Product.findAndCountAll(options);
-        // } else {
-        //     products = await ProductRepository.getAll();
-        //     products = {rows: products};
-        // }
 
         return res.json(products);
     }
@@ -70,7 +58,7 @@ class ProductController {
     async getById(req, res) {
         const {id} = req.params;
  
-        const product = await Product.findOne({where:{id}});
+        const product = await ProductRepository.getById(id);
         return res.json(product)
     }
 
@@ -94,10 +82,7 @@ class ProductController {
                 
             }
 
-            const result = await Product.update(newObj,
-            {
-                where: {id},
-            });
+            const result = await ProductRepository.update(id, newObj);
       
             if (result[0] === 0) {
                 return next(ApiError.badRequest("Product with that ID not found"));
@@ -115,17 +100,19 @@ class ProductController {
         try {
             const {id} = req.params;
 
-            const result = await Product.destroy({
-                where: { id },
-                force: true,
-            });
-        
-            if (result === 0) {
-                return res.status(404).json({
-                    status: "fail",
-                    message: "Note with that ID not found",
-                });
-            }
+            // const result = await Product.destroy({
+            //     where: { id },
+            //     force: true,
+            // });
+
+            const result = await ProductRepository.delete(id);
+            
+            // if (result) {
+            //     return res.status(404).json({
+            //         status: "fail",
+            //         message: "Note with that ID not found",
+            //     });
+            // }
         
             res.status(204).json();
         } catch (e) {
