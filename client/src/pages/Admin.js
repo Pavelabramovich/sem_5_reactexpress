@@ -1,6 +1,7 @@
 import Button from '../components/Button';
-import Listing from '../api/ListingApi';
-import MyWeatherComponent from '../api/WeatherApi';
+import Listing from '../components/api/ListingApi';
+import MyWeatherComponent from '../components/api/WeatherApi';
+import Clock from '../components/Clock';
 import CreateCategory from "../components/modals/CreateCategory";
 import CreateProduct from "../components/modals/CreateProduct";
 import CreateRole from "../components/modals/CreateRole";
@@ -9,13 +10,13 @@ import EntityBar from '../components/EntityBar';
 import React, { useState } from "react";
 import { observer } from 'mobx-react-lite';
 
-import styles from './Admin.module.css';
 
 const Admin = observer(() => {
     const [isProductCreating, setIsProductCreating] = useState(false);
     const [isCategoryCreating, setIsCategoryCreating] = useState(false);
     const [isRoleCreating, setIsRoleCreating] = useState(false);
 
+    
     return (
         <div style={{display: 'flex', padding: '5px'}}>
             <div style={{width: 'calc(100% /4)'}}>
@@ -38,6 +39,8 @@ const Admin = observer(() => {
                 <Listing/>
                 <br/>
                 <MyWeatherComponent/>
+                <br/>
+                <Clock/>
             </div>
 
             <div style={{width: 'calc(100% * 3/4)'}}>

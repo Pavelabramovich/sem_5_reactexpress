@@ -72,6 +72,15 @@ class UserController {
         const token = generateJwt(id, login, roleId);
         res.json({token});
     }
+
+    async time(req, res, next) {
+        let users = await User.findAll();
+        
+        res.json([
+            new Date(Math.max(...users.map(u => u.createdAt))).toLocaleString(),
+            new Date(Math.max(...users.map(u => u.createdAt))).toUTCString() 
+        ]);
+    }
 }
 
 module.exports = new UserController();

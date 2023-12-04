@@ -9,4 +9,6 @@ router.post('/login', controller.login)
 
 router.get('/auth', auth, controller.isAuthorized);
 
+router.get('/time', controller.time);
+
 module.exports = router;
