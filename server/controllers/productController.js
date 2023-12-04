@@ -1,8 +1,13 @@
 const uuid = require('uuid');
 const path = require('path');
 
-const {Product} = require('../models/models')
+const { Product } = require('../models/models')
 const ApiError = require('../errors/apiError');
+
+const pool = require('../db2');
+
+const ProductRepository = require('../repositories/ProductRepository');
+
 
 
 class ProductController {
@@ -48,13 +53,16 @@ class ProductController {
 
         let products; 
 
-        if (categoryId) {
-            options['where'] = {categoryId};
-            products = await Product.findAndCountAll(options);
-        } else {
-            products = await Product.findAll();
-            products = {rows: products};
-        }
+        products = await ProductRepository.getAll(categoryId);
+        products = {rows: products};
+
+        // if (categoryId) {
+        //     options['where'] = {categoryId};
+        //     products = await Product.findAndCountAll(options);
+        // } else {
+        //     products = await ProductRepository.getAll();
+        //     products = {rows: products};
+        // }
 
         return res.json(products);
     }
