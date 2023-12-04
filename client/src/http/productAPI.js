@@ -15,10 +15,7 @@ export const createProduct = async (product) => {
 
         try {
             fieldError = JSON.parse(e?.response?.data?.message)
-        } catch (jsonError) {
-            // if (e.response.data.message === "User is not defined")
-            //     throw ("Product with same name already exists");
-            
+        } catch (jsonError) {            
             throw (e?.response?.data?.message);
         }
 

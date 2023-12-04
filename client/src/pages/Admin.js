@@ -1,4 +1,6 @@
 import Button from '../components/Button';
+import Listing from '../api/ListingApi';
+import MyWeatherComponent from '../api/WeatherApi';
 import CreateCategory from "../components/modals/CreateCategory";
 import CreateProduct from "../components/modals/CreateProduct";
 import CreateRole from "../components/modals/CreateRole";
@@ -32,6 +34,10 @@ const Admin = observer(() => {
                 <CreateProduct isOpen={isProductCreating} setIsOpen={setIsProductCreating} />
                 <CreateCategory isOpen={isCategoryCreating} setIsOpen={setIsCategoryCreating} />
                 <CreateRole isOpen={isRoleCreating} setIsOpen={setIsRoleCreating} />
+
+                <Listing/>
+                <br/>
+                <MyWeatherComponent/>
             </div>
 
             <div style={{width: 'calc(100% * 3/4)'}}>
