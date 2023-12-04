@@ -27,9 +27,11 @@ class ProductController {
                 fname = "image_default.png";
             }
 
+            const productWithSameName = await User.findOne({where:{name}});
 
-            // const filename = uuid.v4() + '.jpg';
-            // img.mv(path.resolve(__dirname, '..', 'static', filename));
+            if (productWithSameName) {
+                return next(ApiError.badRequest(JSON.stringify({field: 'name', text: "Product with same name already exists."})));
+            }
 
             const product = await Product.create({name, description, price, categoryId, img: fname});
 
@@ -53,15 +55,6 @@ class ProductController {
             products = await Product.findAll();
             products = {rows: products};
         }
-
-      
-
-        console.log("---------------------------------------------")
-        console.log(products)
-        console.log(typeof products);
-        console.log(products.rows);
-        console.log(Object.entries(products));
-        console.log()
 
         return res.json(products);
     }
@@ -92,7 +85,6 @@ class ProductController {
             } catch (error) {
                 
             }
-            
 
             const result = await Product.update(newObj,
             {
@@ -111,7 +103,7 @@ class ProductController {
         }
     };
 
-    async delete(res, req, next) {
+    async delete(req, res, next) {
         try {
             const {id} = req.params;
 

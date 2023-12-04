@@ -26,6 +26,14 @@ const CategoryBar = observer(() => {
             <h1 style={{fontSize: '20px', fontWeight: 'bold', marginTop: '8px'}}>Categories</h1>
 
             <div>
+                 <CategoryItem 
+                    selected={null === productStore.selectedCategory}
+                    key={0} 
+                    name={"All"} 
+                    onClick={() => { productStore.selectCategory(null); forceUpdate(); }} 
+                />
+
+
                 {categories.map(c => 
                     <CategoryItem 
                         selected={c.id === productStore.selectedCategory?.id}

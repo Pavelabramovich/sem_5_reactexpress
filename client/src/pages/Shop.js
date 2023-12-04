@@ -1,13 +1,15 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import CategoryBar from '../components/CategoryBar';
 import ProductList from '../components/ProductList';
-
+import { InputGroup, Control, ErrorLabel, TextControl } from '../components/Control';
 import { Context } from '../index';
 import { observer } from 'mobx-react-lite';
 import { getCategories, getProducts } from '../http/productAPI';
 
 const Shop = observer(() => {
     const {productStore} = useContext(Context);
+
+    const [search, setSearch] = useState("");
 
     useEffect(() => {
         getCategories()
@@ -31,6 +33,14 @@ const Shop = observer(() => {
     return (
         <div style={{display: 'flex'}}>
             <div style={{width: 'calc(100% /4)'}}>
+                <InputGroup >
+                    <Control style={{width: '90%', margin: '15px'}}
+                        value={search}
+                        placeholder="Search"
+                        onChange={ev => {setSearch(ev.target.value); productStore.setPattern(ev.target.value);}} 
+                    />
+                </InputGroup>
+
                 <CategoryBar />
             </div>
 

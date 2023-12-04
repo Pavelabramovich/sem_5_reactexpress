@@ -96,8 +96,18 @@ const CreateProduct = observer((props) => {
                 onCancel();
             })
             .catch(e => {
-                setNameError("Product with this name already exists");
-                //console.log(e);
+                console.log(JSON.stringify(e));
+                if (typeof e === 'object' && e !== null) {
+                    setNameError(e.text);
+                } else {
+                    setNameError(e);
+                }
+
+                // try {
+                //     setNameError(e.response.data.message);
+                // } catch (e2) {
+                //     setNameError("Product with this name already exists");
+                // }
             });
     }
 

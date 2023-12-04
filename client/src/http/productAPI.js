@@ -2,21 +2,29 @@ import { $host, $authHost } from './index';
 
 
 export const createProduct = async (product) => {
-    const {data} = await $authHost.post('api/product', product);
-    return data;
+    try {
+        const {data} = await $authHost.post('api/product', product);
+        return data;
+    } catch (e) {
+        let fieldError;
+
+        try {
+            fieldError = JSON.parse(e?.response?.data?.message)
+        } catch (jsonError) {
+            if (e.response.data.message === "User is not defined")
+                throw ("Product with same name already exists");
+            
+            throw (e?.response?.data?.message);
+        }
+
+        throw fieldError;
+    }
 }
 
 export const getProducts = async (categoryId) => {
-   // alert("data")
     const res = await $host.get('api/product', { params: {categoryId}});
-    
-  //  alert("res")
- //   console.log(res);
 
     const {data} = res;
-  //  console.log("data")
-  //  console.log(data)
-  //  console.log(JSON.stringify(data));
     return data;
 }
 

@@ -7,48 +7,51 @@ import { InputGroup, Control, ErrorLabel } from '../Control';
 import { observer } from 'mobx-react-lite';
 import Button from '../Button';
 import UpdateProduct from '../modals/UpdateProduct';
-
-import useForceUpdate from '../../utils/useForceUpdate';
+import { deleteProduct } from '../../http/productAPI';
 
 
 function ProductItem(props) {
-    //const navigate = useNavigate();
     const [isProductUpdating, setIsProductUpdating] = useState(false);
     const [product, setProduct] = useState(props.product || null);
     
 
     return (
-        <div
-            {...props} 
-            className={`${styles.productItem} ${props.selected ? styles.selected : ''}`} 
-            style={{display: 'flex', justifyContent: 'space-between'}}
-        >
-            <img 
-                src={process.env.REACT_APP_API_URL + product.img} 
-                alt={`${product.name}`} 
-                style={{height: '100px', borderRadius: '15px', display: 'flex'}}
-            />
-            <span style={{display: 'flex'}}>
-
-            <div style={{display: 'flex'}}>
-                <div style={{alignSelf: 'center'}}>{product.name}</div>
-            </div>
-            
-            <Button style={{width: '50%', marginLeft: '10px', background: 'red'}} onClick={() => {}}>
-                Delete
-            </Button>
-
-            <Button 
-                style={{width: '95%', marginLeft: '10px', background: 'purple'}} 
-                onClick={() => setIsProductUpdating(true)}
+        (product &&
+            <div
+                {...props} 
+                className={`${styles.productItem} ${props.selected ? styles.selected : ''}`} 
+                style={{display: 'flex', justifyContent: 'space-between'}}
             >
-                Update
-            </Button>
+                <img 
+                    src={process.env.REACT_APP_API_URL + product.img} 
+                    alt={`${product.name}`} 
+                    style={{height: '100px', borderRadius: '15px', display: 'flex'}}
+                />
+                <span style={{display: 'flex'}}>
 
-            <UpdateProduct product={product} isOpen={isProductUpdating} setIsOpen={setIsProductUpdating} reload={setProduct}/>
-            
-           </span>
-        </div>
+                    <div style={{display: 'flex'}}>
+                        <div style={{alignSelf: 'center'}}>{product.name}</div>
+                    </div>
+                    
+                    <Button 
+                        style={{width: '50%', marginLeft: '10px', background: 'red'}} 
+                        onClick={() => { deleteProduct(product.id); setProduct(null); }}
+                    >
+                        Delete
+                    </Button>
+
+                    <Button 
+                        style={{width: '95%', marginLeft: '10px', background: 'purple'}} 
+                        onClick={() => setIsProductUpdating(true)}
+                    >
+                        Update
+                    </Button>
+
+                    <UpdateProduct product={product} isOpen={isProductUpdating} setIsOpen={setIsProductUpdating} reload={setProduct}/>
+                    
+                </span>
+            </div>
+        )
     );
 }
 

@@ -5,6 +5,7 @@ export default class ProductStore {
     constructor() {
         this._categories = [];
         this._products = [];
+        this._pattern = "";
 
         this._selectedCategory = null;
 
@@ -16,9 +17,6 @@ export default class ProductStore {
     }
 
     setProducts(products) {
-       // alert("set products");
-      //  alert(JSON.stringify(Object.entries(products)));
-      //  console.log(JSON.stringify(Object.entries(products)));
         this._products = products;
     }
 
@@ -26,10 +24,16 @@ export default class ProductStore {
         this._selectedCategory = category;
     }
 
+    setPattern(pattern) {
+        this._pattern = pattern;
+    }
+
     get products() {
-      //  alert("get products");
-      //  alert(JSON.stringify(this._products));
-        return this._products;
+        return this._products.filter(p => {
+            return this._pattern === ""
+                ? true
+                : p.name.toUpperCase().startsWith(this._pattern.toUpperCase());
+        });
     }
 
     get categories() {
@@ -38,5 +42,9 @@ export default class ProductStore {
 
     get selectedCategory() {
         return this._selectedCategory;
+    }
+
+    get pattern() {
+        return this._pattern;
     }
 }
