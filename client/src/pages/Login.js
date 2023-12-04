@@ -10,7 +10,10 @@ import { REGISTRATION_URL, SHOP_URL } from "../utils/urls";
 import { login as loginUser } from "../http/userAPI";
 
 
-const Login = () => {
+// import Button2 from '../components/Button2';
+
+
+function Login() {
     const [login, setLogin] = useState("")
     const [password, setPassword] = useState("")
 
@@ -101,10 +104,17 @@ const Login = () => {
             <InputGroup>
                 <Button
                     style={{ background: '#F4a0b5' }}
-                    onClick={onLogin}
+                    onClick={ev => onLogin()}
                 >
                     Log in
                 </Button>
+
+                {/* <Button2
+                    style={{ background: '#F4a0b5' }}
+                    onClick={onLogin}
+                >
+                    Log in
+                </Button2> */}
             </InputGroup>
 
             <p>Not registered? <NavLink className={styles.registerLink} to={REGISTRATION_URL}>Register</ NavLink></p>

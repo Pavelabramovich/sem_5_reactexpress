@@ -27,7 +27,7 @@ class ProductController {
                 fname = "image_default.png";
             }
 
-            const productWithSameName = await User.findOne({where:{name}});
+            const productWithSameName = await Product.findOne({where:{name}});
 
             if (productWithSameName) {
                 return next(ApiError.badRequest(JSON.stringify({field: 'name', text: "Product with same name already exists."})));
