@@ -2,23 +2,26 @@ const {Category} = require('../models/models')
 const ApiError = require('../errors/apiError');
 
 
+const CategoryRepository = require('../repositories/CategoryRepository');
+
+
 class CategoryController {
     async create(req, res, next) {
         const {name} = req.body;
 
-        const categoryWithSameName = await Category.findOne({where:{name}});
+        const categoryWithSameName = await CategoryRepository.getByName(name);
 
         if (categoryWithSameName) {
             return next(ApiError.badRequest("Category with same name already exists."));
         }
 
-        const category = await Category.create({name});
+        const category = await CategoryRepository.create({name});
 
         return res.json(category);
     }
 
     async getAll(req, res) {
-        const categories = await Category.findAll();
+        const categories = await CategoryRepository.getAll();
         return res.json(categories);
     }
 }

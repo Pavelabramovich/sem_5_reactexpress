@@ -9,7 +9,6 @@ const pool = require('../db2');
 const ProductRepository = require('../repositories/ProductRepository');
 
 
-
 class ProductController {
     async create(req, res, next) {
         try {
@@ -32,7 +31,7 @@ class ProductController {
                 fname = "image_default.png";
             }
 
-            const productWithSameName = await Product.findOne({where:{name}});
+           const productWithSameName = await ProductRepository.getByName(name);
 
             if (productWithSameName) {
                 return next(ApiError.badRequest(JSON.stringify({field: 'name', text: "Product with same name already exists."})));
@@ -84,12 +83,7 @@ class ProductController {
 
             const result = await ProductRepository.update(id, newObj);
       
-            if (result[0] === 0) {
-                return next(ApiError.badRequest("Product with that ID not found"));
-            }
-      
-            const product = await Product.findByPk(id);
-            return res.json(product);
+            return res.json(result);
             
         } catch (e) {
             return next(ApiError.badRequest(e.message + "lalalalla"));
@@ -99,20 +93,8 @@ class ProductController {
     async delete(req, res, next) {
         try {
             const {id} = req.params;
-
-            // const result = await Product.destroy({
-            //     where: { id },
-            //     force: true,
-            // });
-
-            const result = await ProductRepository.delete(id);
             
-            // if (result) {
-            //     return res.status(404).json({
-            //         status: "fail",
-            //         message: "Note with that ID not found",
-            //     });
-            // }
+            const result = await ProductRepository.delete(id);
         
             res.status(204).json();
         } catch (e) {

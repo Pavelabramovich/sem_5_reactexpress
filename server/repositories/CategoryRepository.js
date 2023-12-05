@@ -1,16 +1,16 @@
 const pool = require('../db2');
 
 
-class ProductRepository {
+class CategoryRepository {
 
-    static async create(product) {
+    static async create(category) {
         return new Promise(function (resolve, reject) {
-            const {name, description, price, categoryId, img} = product;
+            const {name} = category;
 
             pool.query(
                 String.raw
-                    `INSERT INTO products (name, price, description, "categoryId", img, "createdAt", "updatedAt")  
-                     VALUES ('${name}', ${price}, '${description}', ${categoryId}, '${img}', NOW(), NOW()) RETURNING *`,
+                    `INSERT INTO categories (name, "createdAt", "updatedAt")  
+                     VALUES ('${name}', NOW(), NOW()) RETURNING *`,
                 (error, results) => {
                     if (error) {
                         reject(error);
@@ -26,12 +26,10 @@ class ProductRepository {
     };
 
 
-    static async getAll(categoryId) {
+    static async getAll() {
         try {
             return await new Promise(function (resolve, reject) {
-                let query = categoryId 
-                    ? String.raw`SELECT * FROM products p WHERE p."categoryId" = ${categoryId}`
-                    : String.raw`SELECT * FROM products p`;
+                let query = String.raw`SELECT * FROM categories`;
 
                 pool.query(query, (error, results) => {
                     if (error) {
@@ -58,7 +56,7 @@ class ProductRepository {
 
         try {
             return await new Promise(function (resolve, reject) {
-                let query = String.raw`SELECT * FROM products p WHERE p."id" = ${id}`
+                let query = String.raw`SELECT * FROM categories c WHERE c."id" = ${id}`
 
                 pool.query(query, (error, results) => {
                     if (error) {
@@ -85,7 +83,7 @@ class ProductRepository {
 
         try {
             return await new Promise(function (resolve, reject) {
-                let query = String.raw`SELECT * FROM products p WHERE p."name" = '${name}'`
+                let query = String.raw`SELECT * FROM categories c WHERE c."name" = '${name}'`
 
                 pool.query(query, (error, results) => {
                     if (error) {
@@ -105,24 +103,13 @@ class ProductRepository {
     };
 
 
-    static async update(id, product) {
+    static async update(id, name) {
         return new Promise(function (resolve, reject) {
-            const {name, description, price, categoryId, img} = product;
-            const fields = {name, description, price, categoryId, img};
-
-            let query = "UPDATE products SET";
-
-            for (let field in fields) {
-                if (fields[field]) {
-                    query += String.raw` "${field}" = '${fields[field]}',`;
-                }
+            if (!name) {
+                reject(new Error("No name"));
             }
 
-            if (query.endsWith(',')) {
-                query = query.slice(0, -1);
-            }
-
-            query += ` WHERE id = ${id} RETURNING *`;
+            let query = `UPDATE categories SET name = '${name}' WHERE id = ${id} RETURNING *`;
 
             pool.query(query, (error, results) => {
                 if (error) {
@@ -141,13 +128,13 @@ class ProductRepository {
     static async delete(id) {
         return new Promise(function (resolve, reject) {
             pool.query(
-                `DELETE FROM products WHERE id = ${id}`,
+                `DELETE FROM categories WHERE id = ${id}`,
                 (error, results) => {
                     if (error) {
                         reject(error);
                     }
                     
-                    resolve(`Product deleted with ID: ${id}`);
+                    resolve(`Category deleted with ID: ${id}`);
                 }
             );
         });
@@ -155,4 +142,4 @@ class ProductRepository {
 }
 
 
-module.exports = ProductRepository;
+module.exports = CategoryRepository;
