@@ -1,4 +1,4 @@
-const pool = require('../db2');
+const pool = require('../db');
 
 
 class CategoryRepository {

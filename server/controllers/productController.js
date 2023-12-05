@@ -4,7 +4,7 @@ const path = require('path');
 
 const ApiError = require('../errors/apiError');
 
-const pool = require('../db2');
+const pool = require('../db');
 
 const ProductRepository = require('../repositories/ProductRepository');
 
