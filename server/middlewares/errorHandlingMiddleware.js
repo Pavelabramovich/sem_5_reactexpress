@@ -1,7 +1,4 @@
 function errorHandler(err, req, res, next) {
-
-
-
   const isDev = (process.env.NODE_ENV || 'development') === 'development';
   
   const message = err.message;

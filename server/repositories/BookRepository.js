@@ -37,7 +37,7 @@ class BookRepository {
         try {
             return await new Promise(function (resolve, reject) {
                 let query = authorId 
-                    ? String.raw`SELECT * FROM books b WHERE b."author_id" = ${authorId}`
+                    ? String.raw`SELECT * FROM books b WHERE b."author_id" = '${authorId}'`
                     : String.raw`SELECT * FROM books b`;
 
                 pool.query(query, (error, results) => {
@@ -107,7 +107,7 @@ class BookRepository {
             });
         } catch (error_1) {
             console.error(error_1);
-            throw new Error("Internal server error");
+            throw new Error("Internal SERWE error");
         }
     };
 
@@ -130,6 +130,8 @@ class BookRepository {
             }
 
             query += ` WHERE id = ${id} RETURNING *`;
+
+            console.log(query);
 
             pool.query(query, (error, results) => {
                 if (error) {

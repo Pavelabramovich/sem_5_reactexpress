@@ -1,10 +1,12 @@
-import { useContext, useState } from 'react';
+import { useContext, useState, useEffect } from 'react';
 import styles from './AdminBookList.module.css';
 import { Context } from '../../index';
 import { observer } from 'mobx-react-lite';
 import Button from '../Button';
-import UpdateBook from '../modals/UpdateBook';
+import UpdateBook from '../modals/Book/UpdateBook';
+import { getAuthors, getBooks,  createBook } from '../../http/bookAPI';
 import { deleteBook } from '../../http/bookAPI';
+import CreateBook from "../modals/Book/CreateBook";
 
 
 function BookItem(props) {
@@ -54,17 +56,37 @@ function BookItem(props) {
 
 
 const AdminBookList = observer(() => {
+    const [isBookCreating, setIsBookCreating] = useState(false);
+
     const {bookStore} = useContext(Context);
-    const books = bookStore.books;
+
+    useEffect(() => {
+        getAuthors()
+            .then(authors => {
+                bookStore.setAuthors(authors);
+            });
+
+        getBooks()
+            .then(newBooks => {
+               bookStore.setBooks(newBooks.rows);
+            });
+    }, []);
+
 
     return (
         <div style={{display: 'block'}}>
-            {books.map(b => 
+            {bookStore.books.map(b => 
                 <BookItem 
                     key={b.id} 
                     book={b}
                 />
             )}
+
+            <Button style={{width: '95%', background: 'cornflowerblue'}} onClick={() => {setIsBookCreating(true)}}>
+                Add book
+            </Button>
+
+            <CreateBook isOpen={isBookCreating} setIsOpen={setIsBookCreating} />
         </div>
     );
 });

@@ -8,7 +8,7 @@ import { observer } from 'mobx-react-lite';
 
 function EntityItem(props) {
     return (
-        <div {...props} className={`${styles.categoryItem} ${props.selected ? styles.selected : ''}`}>
+        <div {...props} className={`${styles.entityItem} ${props.selected ? styles.selected : ''}`}>
             <span>{props.name}</span>
         </div>
     );
@@ -23,15 +23,15 @@ const EntityBar = observer(() => {
    
     return (
         <div style={{textAlign: 'center'}}>
-            <h1 style={{fontSize: '20px', fontWeight: 'bold', marginTop: '8px'}}>Categories</h1>
+            <h1 style={{fontSize: '20px', fontWeight: 'bold', marginTop: '8px'}}>Authors</h1>
 
             <div>
-                {entities.map(c => 
+                {entities.map(e => 
                     <EntityItem 
-                        selected={c.id === adminStore.selectedEntityId}
-                        key={c.id} 
-                        name={c.name} 
-                        onClick={() => {  adminStore.selectEntityById(c.id); forceUpdate(); }} 
+                        selected={e.id === adminStore.selectedEntityId}
+                        key={e.id} 
+                        name={e.name} 
+                        onClick={() => {adminStore.selectEntityById(e.id); forceUpdate(); }} 
                     />
                 )}
             </div> 

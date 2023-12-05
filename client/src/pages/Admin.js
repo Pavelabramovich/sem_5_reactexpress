@@ -1,40 +1,33 @@
 import Button from '../components/Button';
-import CreateAuthor from "../components/modals/CreateAuthor";
-import CreateBook from "../components/modals/CreateBook";
-import CreateRole from "../components/modals/CreateRole";
+import CreateRole from "../components/modals/Role/CreateRole";
 import AdminBookList from "../components/tables/AdminBookList";
 import EntityBar from '../components/EntityBar';
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { observer } from 'mobx-react-lite';
+import { Context } from '../index';
+import AdminAuthorList from '../components/tables/AdminAuthorList';
+import AdminUserList from '../components/tables/AdminUserList';
 
 
 const Admin = observer(() => {
-    const [isBookCreating, setIsBookCreating] = useState(false);
-    const [isAuthorCreating, setIsAuthorCreating] = useState(false);
-    const [isRoleCreating, setIsRoleCreating] = useState(false);
+    const {adminStore} = useContext(Context);
 
     return (
         <div style={{display: 'flex', padding: '5px'}}>
             <div style={{width: 'calc(100% /4)'}}>
                 <EntityBar />
-
-                <Button style={{width: '95%', background: 'cornflowerblue'}} onClick={() => {setIsBookCreating(true)}}>
-                    Add book
-                </Button>
-                <Button style={{width: '95%', background: '#A419F2'}} onClick={() => setIsAuthorCreating(true)}>
-                    Add author
-                </Button>
-                <Button style={{width: '95%', background: 'purple'}} onClick={() => setIsRoleCreating(true)}>
-                    Add role
-                </Button>
-
-                <CreateBook isOpen={isBookCreating} setIsOpen={setIsBookCreating} />
-                <CreateAuthor isOpen={isAuthorCreating} setIsOpen={setIsAuthorCreating} />
-                <CreateRole isOpen={isRoleCreating} setIsOpen={setIsRoleCreating} />
             </div>
 
             <div style={{width: 'calc(100% * 3/4)'}}>
-                <AdminBookList />
+                {adminStore.selectedEntityId == 1
+                    ? <AdminBookList />
+                : adminStore.selectedEntityId == 2
+                    ? <AdminAuthorList />
+                : adminStore.selectedEntityId == 3
+                    ? <AdminUserList />
+                : 
+                    <></>  
+                }  
             </div>
         </div>
     )

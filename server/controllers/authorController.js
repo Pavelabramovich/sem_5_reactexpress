@@ -19,8 +19,36 @@ class AuthorController {
     }
 
     async getAll(req, res) {
-        const categories = await AuthorRepository.getAll();
-        return res.json(categories);
+        const authors = await AuthorRepository.getAll();
+        return res.json(authors);
+    }
+
+    async update(req, res, next) {
+        try {
+            const {id} = req.params;
+            const {name} = req.body;
+
+            console.log(id + "ghgfghgfgfdfffffffff"+name)
+
+            const author = await AuthorRepository.update(id, name);
+      
+            return res.json(author);
+            
+        } catch (e) {
+            return next(ApiError.badRequest(e.message));
+        }
+    }
+
+    async delete(req, res, next) {
+        try {
+            const {id} = req.params;
+            
+            const result = await AuthorRepository.delete(id);
+        
+            res.status(204).json();
+        } catch (e) {
+            return next(ApiError.badRequest(e.message));
+        }
     }
 }
 

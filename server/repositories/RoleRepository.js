@@ -3,9 +3,9 @@ const pool = require('../db');
 
 class RoleRepository {
 
-    static async create(category) {
+    static async create(role) {
         return new Promise(function (resolve, reject) {
-            const {name} = category;
+            const {name} = role;
 
             pool.query(
                 String.raw

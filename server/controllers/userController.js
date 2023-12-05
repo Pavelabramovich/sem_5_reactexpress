@@ -73,6 +73,48 @@ class UserController {
         const token = generateJwt(id, login, roleId);
         res.json({token});
     }
+
+
+    async getAll(req, res) {
+        let {roleId} = req.query;
+
+        let users = await UserRepository.getAll(roleId);
+
+        return res.json(users);
+    }
+
+    async getById(req, res) {
+        const {id} = req.params;
+ 
+        const users = await UserRepository.getById(id);
+        return res.json(users)
+    }
+
+    async update(req, res, next) {
+        try {
+            const {id} = req.params;
+            const newUser = {...req.body};
+
+            const user = await UserRepository.update(id, newUser);
+      
+            return res.json(user);
+            
+        } catch (e) {
+            return next(ApiError.badRequest(e.message));
+        }
+    };
+
+    async delete(req, res) {
+        try {
+            const {id} = req.params;
+            
+            const result = await UserRepository.delete(id);
+        
+            res.status(204).json();
+        } catch (e) {
+            return next(ApiError.badRequest(e.message));
+        }
+    }
 }
 
 module.exports = new UserController();

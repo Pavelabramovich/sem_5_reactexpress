@@ -17,7 +17,6 @@ export default class BookStore {
     }
 
     setBooks(books) {
-      //  alert(JSON.stringify(books));
         this._books = books;
     }
 
@@ -30,11 +29,7 @@ export default class BookStore {
     }
 
     get books() {
-        return this._books.filter(b => {
-            return this._pattern === ""
-                ? true
-                : b.title.toUpperCase().startsWith(this._pattern.toUpperCase());
-        });
+        return this._books;
     }
 
     get authors() {

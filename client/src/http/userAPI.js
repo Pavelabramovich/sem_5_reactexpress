@@ -39,6 +39,24 @@ export const check = async () => {
     return jwtDecode(data.token);
 }
 
+export const getUsers = async (roleId) => {
+    const res = await $host.get('api/user', { params: {roleId}});
+
+    const {data} = res;
+    return data;
+}
+
+
+
+export const updateUser = async (id, user) => {
+    const {data} = await $authHost.patch(`api/user/${id}`, user);
+    return data;
+}
+
+
+
+
+
 
 export const createRole = async (name) => {
     const {data} = await $authHost.post('api/role', {name});
@@ -47,5 +65,15 @@ export const createRole = async (name) => {
 
 export const getRoles = async () => {
     const {data} = await $host.get('api/role');
+    return data;
+}
+
+export const updateRole = async (id, role) => {
+    const {data} = await $authHost.patch(`api/role/${id}`, role);
+    return data;
+}
+
+export const deleteRole = async (id) => {
+    const {data} = await $authHost.delete(`api/role/${id}`);
     return data;
 }

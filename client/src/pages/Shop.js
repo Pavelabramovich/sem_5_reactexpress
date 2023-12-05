@@ -21,6 +21,8 @@ const Shop = observer(() => {
             .then(books => {
                 bookStore.setBooks(books.rows);
             });
+
+        bookStore.setPattern("");
     }, []);
 
     useEffect(() => {
@@ -29,6 +31,8 @@ const Shop = observer(() => {
                 bookStore.setBooks(books.rows);
             });
     }, [bookStore.selectedAuthor])
+
+    
 
     return (
         <div style={{display: 'flex'}}>

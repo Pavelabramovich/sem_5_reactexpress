@@ -24,6 +24,32 @@ class RoleController {
 
         return res.json(roles);
     }
+
+    async update(req, res, next) {
+        try {
+            const {id} = req.params;
+            const {name} = req.body;
+
+            const role = await RoleRepository.update(id, name);
+      
+            return res.json(role);
+            
+        } catch (e) {
+            return next(ApiError.badRequest(e.message));
+        }
+    }
+
+    async delete(req, res, next) {
+        try {
+            const {id} = req.params;
+            
+            const result = await BookRepository.delete(id);
+        
+            res.status(204).json();
+        } catch (e) {
+            return next(ApiError.badRequest(e.message));
+        }
+    }
 }
 
 module.exports = new RoleController();

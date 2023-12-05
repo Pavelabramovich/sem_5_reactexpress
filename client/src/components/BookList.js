@@ -33,7 +33,15 @@ function BookItem(props) {
 
 const BookList = observer(() => {
     const {bookStore} = useContext(Context);
-    const books = bookStore.books;
+    let books = bookStore.books;
+    const pattern = bookStore.pattern;
+    const selectedAuthor = bookStore.selectedAuthor;
+
+    books = books.filter(b => (pattern === "")
+                            ? true
+                            : b.title.toUpperCase().startsWith(pattern.toUpperCase()));
+    
+    books = books.filter(b => selectedAuthor ? b.authorId === selectedAuthor.id : true);
     
     return (
         <div style={{display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)'}}>

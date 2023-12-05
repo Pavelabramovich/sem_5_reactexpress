@@ -37,7 +37,7 @@ class UserRepository {
     static async getAll(roleId) {
         try {
             return await new Promise(function (resolve, reject) {
-                let query = categoryId 
+                let query = roleId 
                     ? String.raw`SELECT * FROM users u WHERE u."role_id" = ${roleId}`
                     : String.raw`SELECT * FROM users u`;
 
@@ -60,13 +60,15 @@ class UserRepository {
 
 
     static async getById(id) {
-        if (!id) {
+        console.log("--------------------------"+ id)
+
+        if (!id || !/^[0-9]*$/.test(`${id}`)) {
             throw new Error("No id");
         }
 
         try {
             return await new Promise(function (resolve, reject) {
-                let query = String.raw`SELECT * FROM users u WHERE u."id" = ${id}`
+                let query = String.raw`SELECT * FROM users u WHERE u."id" = '${id}'`
 
                 pool.query(query, (error, results) => {
                     if (error) {

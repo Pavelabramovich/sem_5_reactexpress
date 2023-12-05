@@ -78,7 +78,7 @@ class AuthorRepository {
 
     static async getByName(name) {
         if (!name) {
-            throw new Error("No name");
+            throw new Error("No NAME");
         }
 
         try {

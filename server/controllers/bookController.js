@@ -31,9 +31,9 @@ class BookController {
                 fname = "image_default.png";
             }
 
-            const bookWithSameName = await BookRepository.getByTitle(title);
+            const bookWithSameTitle = await BookRepository.getByTitle(title);
 
-            if (bookWithSameName) {
+            if (bookWithSameTitle) {
                 return next(ApiError.badRequest(JSON.stringify({field: 'title', text: "Book with same title already exists."})));
             }
 
@@ -70,19 +70,19 @@ class BookController {
                 if (req.files === null) {
                     
                 } else {
-                    const {img} = req.files;
+                    const {image} = req.files;
 
                     const filename = uuid.v4() + '.jpg';
-                    img.mv(path.resolve(__dirname, '..', 'static', filename));
+                    image.mv(path.resolve(__dirname, '..', 'static', filename));
     
                     newBook.image = filename;
                 }
             } catch (error) {
                 
             }
-
+            
             const book = await BookRepository.update(id, newBook);
-      
+
             return res.json(book);
             
         } catch (e) {
