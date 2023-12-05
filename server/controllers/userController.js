@@ -1,8 +1,9 @@
 const bcrypt = require('bcrypt');
 const jsonwebtoken = require('jsonwebtoken');
 
-const {User} = require('../models/models')
 const ApiError = require('../errors/apiError');
+
+const UserRepository = require('../repositories/UserRepository');
 
 
 function generateJwt(id, login, roleId) {
@@ -25,7 +26,7 @@ class UserController {
             }
         }
         
-        const userWithSameLogin = await User.findOne({where:{login}});
+        const userWithSameLogin = await UserRepository.getByLogin(login);
 
         if (userWithSameLogin) {
             return next(ApiError.badRequest(JSON.stringify({field: 'login', text: "User with same login already exists."})));
@@ -34,7 +35,7 @@ class UserController {
         const hashedPassword = await bcrypt.hash(password, 5);
 
         try {
-            const user = await User.create({login, password: hashedPassword, roleId: 1}, { validate: true });
+            const user = await UserRepository.create({login, password: hashedPassword, roleId: 1}, { validate: true });
             const token = generateJwt(user.id, login, 1);
 
             return res.json({token})
@@ -46,7 +47,7 @@ class UserController {
     async login(req, res, next) {
         const {login, password} = req.body;
 
-        const user = await User.findOne({where: {login}});
+        const user = await UserRepository.getByLogin(login);
 
         if (!user) {
             return next(ApiError.badRequest(JSON.stringify({field: 'login', text: "User with this login does not exist"})));
@@ -71,15 +72,6 @@ class UserController {
 
         const token = generateJwt(id, login, roleId);
         res.json({token});
-    }
-
-    async time(req, res, next) {
-        let users = await User.findAll();
-        
-        res.json([
-            new Date(Math.max(...users.map(u => u.createdAt))).toLocaleString(),
-            new Date(Math.max(...users.map(u => u.createdAt))).toUTCString() 
-        ]);
     }
 }
 

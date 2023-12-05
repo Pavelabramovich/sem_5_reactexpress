@@ -1,6 +1,5 @@
-const {Category} = require('../models/models')
-const ApiError = require('../errors/apiError');
 
+const ApiError = require('../errors/apiError');
 
 const CategoryRepository = require('../repositories/CategoryRepository');
 

@@ -1,4 +1,4 @@
-const {Role} = require('../models/models')
+
 const ApiError = require('../errors/apiError');
 
 const RoleRepository = require('../repositories/RoleRepository');

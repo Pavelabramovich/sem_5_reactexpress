@@ -1,7 +1,4 @@
 import Button from '../components/Button';
-import Listing from '../components/api/ListingApi';
-import MyWeatherComponent from '../components/api/WeatherApi';
-import Clock from '../components/Clock';
 import CreateCategory from "../components/modals/CreateCategory";
 import CreateProduct from "../components/modals/CreateProduct";
 import CreateRole from "../components/modals/CreateRole";
@@ -16,13 +13,12 @@ const Admin = observer(() => {
     const [isCategoryCreating, setIsCategoryCreating] = useState(false);
     const [isRoleCreating, setIsRoleCreating] = useState(false);
 
-    
     return (
         <div style={{display: 'flex', padding: '5px'}}>
             <div style={{width: 'calc(100% /4)'}}>
                 <EntityBar />
 
-                <Button style={{width: '95%', background: 'cornflowerblue'}} onClick={() => {setIsProductCreating(false);setIsProductCreating(true)}}>
+                <Button style={{width: '95%', background: 'cornflowerblue'}} onClick={() => {setIsProductCreating(true)}}>
                     Add product
                 </Button>
                 <Button style={{width: '95%', background: '#A419F2'}} onClick={() => setIsCategoryCreating(true)}>
@@ -35,12 +31,6 @@ const Admin = observer(() => {
                 <CreateProduct isOpen={isProductCreating} setIsOpen={setIsProductCreating} />
                 <CreateCategory isOpen={isCategoryCreating} setIsOpen={setIsCategoryCreating} />
                 <CreateRole isOpen={isRoleCreating} setIsOpen={setIsRoleCreating} />
-
-                <Listing/>
-                <br/>
-                <MyWeatherComponent/>
-                <br/>
-                <Clock/>
             </div>
 
             <div style={{width: 'calc(100% * 3/4)'}}>

@@ -1,7 +1,7 @@
 const uuid = require('uuid');
 const path = require('path');
 
-const { Product } = require('../models/models')
+
 const ApiError = require('../errors/apiError');
 
 const pool = require('../db2');
@@ -31,7 +31,7 @@ class ProductController {
                 fname = "image_default.png";
             }
 
-           const productWithSameName = await ProductRepository.getByName(name);
+            const productWithSameName = await ProductRepository.getByName(name);
 
             if (productWithSameName) {
                 return next(ApiError.badRequest(JSON.stringify({field: 'name', text: "Product with same name already exists."})));

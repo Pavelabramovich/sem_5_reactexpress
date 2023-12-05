@@ -2,13 +2,13 @@ const sequelize = require('../db');
 const {DataTypes} = require('sequelize');
 
 const User = sequelize.define('user', {
-    id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},  //is: /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/}
-    login: {type: DataTypes.STRING, unique: true, validate: { //len: [1, 20]
+    id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},  
+    login: {type: DataTypes.STRING, unique: true, validate: {
         validateLogin: function(value) {
             if (!/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(value)) {
                throw new Error('Incorrect email format');
             }
-         }
+        }
     }},
     password: {type: DataTypes.STRING}
 });
