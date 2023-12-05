@@ -1,12 +1,12 @@
-import styles from "./CreateCategory.module.css";
+import styles from "./CreateAuthor.module.css";
 import { useState } from 'react'
 import Modal from './Modal';
 import Button from '../Button';
 import { InputGroup, Control, ErrorLabel } from '../Control';
-import { createCategory } from "../../http/productAPI";
+import { createAuthor } from "../../http/bookAPI";
 
 
-const CreateCategory = (props) => {
+const CreateAuthor = (props) => {
     const isOpen = props.isOpen;
     const setIsOpen = props.setIsOpen;
 
@@ -15,16 +15,16 @@ const CreateCategory = (props) => {
 
     function onAdd() {
         if (name === "") {
-            setNameError("Enter category name");
+            setNameError("Enter author name");
         }
 
-        createCategory(name)
-            .then(category => {
+        createAuthor(name)
+            .then(author => {
                 setName("");
                 setIsOpen(false);
             })
             .catch(e => {
-                setNameError("Category with this name already exists");
+                setNameError("Author with this name already exists");
             });
     }
 
@@ -38,14 +38,14 @@ const CreateCategory = (props) => {
         <Modal isOpen={isOpen} setIsOpen={setIsOpen} onClose={onCancel}>
             <div>
                 <div className={styles.header}>
-                    <h5 className={styles.heading}>Add category</h5>
+                    <h5 className={styles.heading}>Add author</h5>
                 </div>
             
                 <div className={styles.content}>
                     <InputGroup>
                         <Control
                             value={name}
-                            placeholder="Enter new category name"
+                            placeholder="Enter new author name"
                             onChange={ev => {setName(ev.target.value); setNameError("");}} 
                         />
                         <ErrorLabel>{nameError}</ErrorLabel>
@@ -67,4 +67,4 @@ const CreateCategory = (props) => {
 }
 
 
-export default CreateCategory;
+export default CreateAuthor;

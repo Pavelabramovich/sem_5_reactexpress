@@ -6,13 +6,13 @@ const ApiError = require('../errors/apiError');
 
 const pool = require('../db');
 
-const ProductRepository = require('../repositories/ProductRepository');
+const BookRepository = require('../repositories/BookRepository');
 
 
-class ProductController {
+class BookController {
     async create(req, res, next) {
         try {
-            const {name, description, price, categoryId} = req.body;
+            const {title, price, authorId} = req.body;
 
             let fname;
 
@@ -20,10 +20,10 @@ class ProductController {
                 if (req.files === null) {
                     fname = "image_default.png";
                 } else {
-                    const {img} = req.files;
+                    const {image} = req.files;
 
                     const filename = uuid.v4() + '.jpg';
-                    img.mv(path.resolve(__dirname, '..', 'static', filename));
+                    image.mv(path.resolve(__dirname, '..', 'static', filename));
     
                     fname = filename;
                 }
@@ -31,40 +31,40 @@ class ProductController {
                 fname = "image_default.png";
             }
 
-            const productWithSameName = await ProductRepository.getByName(name);
+            const bookWithSameName = await BookRepository.getByTitle(title);
 
-            if (productWithSameName) {
-                return next(ApiError.badRequest(JSON.stringify({field: 'name', text: "Product with same name already exists."})));
+            if (bookWithSameName) {
+                return next(ApiError.badRequest(JSON.stringify({field: 'title', text: "Book with same title already exists."})));
             }
 
-            const product = await ProductRepository.create({name, description, price, categoryId, img: fname});
+            const book = await BookRepository.create({title, price, authorId, image: fname});
 
-            return res.json(product);
+            return res.json(book);
         } catch (e) {
             return next(ApiError.badRequest(e.message));
         }
     }
 
     async getAll(req, res) {
-        let {categoryId} = req.query;
+        let {authorId} = req.query;
 
-        let products = await ProductRepository.getAll(categoryId);
-        products = {rows: products};
+        let books = await BookRepository.getAll(authorId);
+        books = {rows: books};
 
-        return res.json(products);
+        return res.json(books);
     }
 
     async getById(req, res) {
         const {id} = req.params;
  
-        const product = await ProductRepository.getById(id);
-        return res.json(product)
+        const books = await BookRepository.getById(id);
+        return res.json(books)
     }
 
     async update(req, res, next) {
         try {
             const {id} = req.params;
-            const newObj = { ...req.body, updatedAt: Date.now() };
+            const newBook = {...req.body};
 
             try {
                 if (req.files === null) {
@@ -75,18 +75,18 @@ class ProductController {
                     const filename = uuid.v4() + '.jpg';
                     img.mv(path.resolve(__dirname, '..', 'static', filename));
     
-                    newObj['img'] = filename;
+                    newBook.image = filename;
                 }
             } catch (error) {
                 
             }
 
-            const result = await ProductRepository.update(id, newObj);
+            const book = await BookRepository.update(id, newBook);
       
-            return res.json(result);
+            return res.json(book);
             
         } catch (e) {
-            return next(ApiError.badRequest(e.message + "lalalalla"));
+            return next(ApiError.badRequest(e.message));
         }
     };
 
@@ -94,7 +94,7 @@ class ProductController {
         try {
             const {id} = req.params;
             
-            const result = await ProductRepository.delete(id);
+            const result = await BookRepository.delete(id);
         
             res.status(204).json();
         } catch (e) {
@@ -103,4 +103,4 @@ class ProductController {
     };
 }
 
-module.exports = new ProductController();
+module.exports = new BookController();

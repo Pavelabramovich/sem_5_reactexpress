@@ -1,16 +1,16 @@
 const pool = require('../db');
 
 
-class CategoryRepository {
+class AuthorRepository {
 
-    static async create(category) {
+    static async create(author) {
         return new Promise(function (resolve, reject) {
-            const {name} = category;
+            const {name} = author;
 
             pool.query(
                 String.raw
-                    `INSERT INTO categories (name, "createdAt", "updatedAt")  
-                     VALUES ('${name}', NOW(), NOW()) RETURNING *`,
+                    `INSERT INTO authors (name)  
+                     VALUES ('${name}') RETURNING *`,
                 (error, results) => {
                     if (error) {
                         reject(error);
@@ -29,7 +29,7 @@ class CategoryRepository {
     static async getAll() {
         try {
             return await new Promise(function (resolve, reject) {
-                let query = String.raw`SELECT * FROM categories`;
+                let query = String.raw`SELECT * FROM authors`;
 
                 pool.query(query, (error, results) => {
                     if (error) {
@@ -56,7 +56,7 @@ class CategoryRepository {
 
         try {
             return await new Promise(function (resolve, reject) {
-                let query = String.raw`SELECT * FROM categories c WHERE c."id" = ${id}`
+                let query = String.raw`SELECT * FROM authors a WHERE a."id" = ${id}`
 
                 pool.query(query, (error, results) => {
                     if (error) {
@@ -83,7 +83,7 @@ class CategoryRepository {
 
         try {
             return await new Promise(function (resolve, reject) {
-                let query = String.raw`SELECT * FROM categories c WHERE c."name" = '${name}'`
+                let query = String.raw`SELECT * FROM authors a WHERE a."name" = '${name}'`
 
                 pool.query(query, (error, results) => {
                     if (error) {
@@ -109,7 +109,7 @@ class CategoryRepository {
                 reject(new Error("No name"));
             }
 
-            let query = `UPDATE categories SET name = '${name}' WHERE id = ${id} RETURNING *`;
+            let query = `UPDATE authors SET name = '${name}' WHERE id = ${id} RETURNING *`;
 
             pool.query(query, (error, results) => {
                 if (error) {
@@ -128,13 +128,13 @@ class CategoryRepository {
     static async delete(id) {
         return new Promise(function (resolve, reject) {
             pool.query(
-                `DELETE FROM categories WHERE id = ${id}`,
+                `DELETE FROM authors WHERE id = ${id}`,
                 (error, results) => {
                     if (error) {
                         reject(error);
                     }
                     
-                    resolve(`Category deleted with ID: ${id}`);
+                    resolve(`Author deleted with ID: ${id}`);
                 }
             );
         });
@@ -142,4 +142,4 @@ class CategoryRepository {
 }
 
 
-module.exports = CategoryRepository;
+module.exports = AuthorRepository;

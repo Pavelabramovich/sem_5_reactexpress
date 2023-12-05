@@ -1,20 +1,29 @@
-.productItem {
+.bookItem {
     margin: 10px;
     padding: 10px;
     border: 1px solid #bbb;
-    background-color: #eee;
+    background-color: white;
 
-    border-radius: 10px;
-
+    border-radius: 25px;
+    cursor: pointer;
+    
     transition: color .17s ease-in-out, background-color .17s ease-in-out, border-color .17s ease-in-out, box-shadow .17s ease-in-out;
 }
+
+.bookItem:hover {
+    background-color: #eee;
+}
+
+.bookItem:active {
+    background-color: #ccc;
+}
   
-.productItem span {
+.bookItem span {
     font-size: 1.2em;
     text-decoration: none;
     color: #333;
 }
 
-.productItem.selected {
+.bookItem.selected {
     background-color: #aaa;
 }

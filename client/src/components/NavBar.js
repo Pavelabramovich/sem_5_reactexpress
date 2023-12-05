@@ -42,7 +42,7 @@ const Navbar = observer(() => {
             <NavLink className={styles.navLink} to={SHOP_URL}>Catalog (home)</NavLink>
           </li>
           <li onClick={removeActive}>
-            <NavLink className={styles.navLink} to={SHOP_URL}>Products (home)</NavLink>
+            <NavLink className={styles.navLink} to={SHOP_URL}>Books (home)</NavLink>
           </li>
 
           

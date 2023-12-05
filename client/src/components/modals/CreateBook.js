@@ -1,40 +1,39 @@
-import styles from "./CreateProduct.module.css";
+import styles from "./CreateBook.module.css";
 import { useState, useContext, useEffect } from 'react';
 import Modal from './Modal';
 import Button from '../Button';
 import Dropdown from '../Dropdown';
 import { InputGroup, Control, ErrorLabel, TextControl } from '../Control';
 import { Context } from '../../index';
-import { getCategories, getProducts,  createProduct } from '../../http/productAPI';
+import { getAuthors, getBooks,  createBook } from '../../http/bookAPI';
 import { observer } from 'mobx-react-lite';
 
 
-const CreateProduct = observer((props) => {
-    const {productStore} = useContext(Context);
-    const categories = productStore.categories;
+const CreateBook = observer((props) => {
+    const {bookStore} = useContext(Context);
+    const authors = bookStore.authors;
 
     const isOpen = props.isOpen;
     const setIsOpen = props.setIsOpen;
 
-    const [name, setName] = useState("");
-    const [selectedCategory, setSelectedCategory] = useState(null);
+    const [title, setTitle] = useState("");
+    const [selectedAuthor, setSelectedAuthor] = useState(null);
     const [price, setPrice] = useState("");
-    const [description, setDescription] = useState("");
     const [image, setImage] = useState("");
 
-    const [nameError, setNameError] = useState("");
-    const [categoryError, setCategoryError] = useState("");
+    const [titleError, setTitleError] = useState("");
+    const [authorError, setAuthorError] = useState("");
     const [priceError, setPriceError] = useState("");
 
     useEffect(() => {
-        getCategories()
-            .then(categories => {
-                productStore.setCategories(categories);
+        getAuthors()
+            .then(authors => {
+                bookStore.setAuthors(authors);
             });
 
-        getProducts()
-            .then(products => {
-                productStore.setProducts(products.rows);
+        getBooks()
+            .then(books => {
+               bookStore.setBooks(books.rows);
             });
     }, [props]);
 
@@ -47,23 +46,23 @@ const CreateProduct = observer((props) => {
     function onAdd() {
         var isError = false;
 
-        if (!nameError) {
-            if (name === "") {
-                setNameError("Enter product name");
+        if (!titleError) {
+            if (title === "") {
+                setTitleError("Enter book name");
                 isError = true;
             } else {
-                setNameError("");
+                setTitleError("");
             }
         } else {
             isError = true;
         }
 
-        if (!categoryError) {
-            if (selectedCategory === null) {
-                setCategoryError("Select category");
+        if (!authorError) {
+            if (selectedAuthor === null) {
+                setAuthorError("Select author");
                 isError = true;
             } else {
-                setCategoryError("");
+                setAuthorError("");
             }
         } else {
             isError = true;
@@ -71,7 +70,7 @@ const CreateProduct = observer((props) => {
 
         if (!priceError) {
             if (!price) {
-                setPriceError("Enter product price");
+                setPriceError("Enter book price");
                 isError = true;
             } else {
                 setPriceError("");
@@ -85,41 +84,33 @@ const CreateProduct = observer((props) => {
         }
 
         const formData = new FormData();
-        formData.append('name', name);
-        formData.append('categoryId', `${selectedCategory.id}`);
+        formData.append('title', title);
+        formData.append('authorId', `${selectedAuthor.id}`);
         formData.append('price', `${price}`);
-        formData.append('description', description);
-        formData.append('img', image);
+        formData.append('image', image);
 
-        createProduct(formData)
-            .then(product => {
+        createBook(formData)
+            .then(book => {
                 onCancel();
             })
             .catch(e => {
                 console.log(JSON.stringify(e));
                 if (typeof e === 'object' && e !== null) {
-                    setNameError(e.text);
+                    setTitleError(e.text);
                 } else {
-                    setNameError(e);
+                    setTitleError(e);
                 }
-
-                // try {
-                //     setNameError(e.response.data.message);
-                // } catch (e2) {
-                //     setNameError("Product with this name already exists");
-                // }
             });
     }
 
     function onCancel() {
-        setName("");
-        setSelectedCategory(null);
+        setTitle("");
+        setSelectedAuthor(null);
         setPrice(0);
-        setDescription("");
         setImage("");
 
-        setNameError("");
-        setCategoryError("");
+        setTitleError("");
+        setAuthorError("");
         setPriceError("");
 
         setIsOpen(false);
@@ -130,58 +121,53 @@ const CreateProduct = observer((props) => {
         <Modal isOpen={isOpen} setIsOpen={setIsOpen} onClose={onCancel}>
             <div>
                 <div className={styles.header}>
-                    <h5 className={styles.heading}>Add product</h5>
+                    <h5 className={styles.heading}>Add book</h5>
                 </div>
             
                 <div className={styles.content}>
                     <InputGroup>
                         <Control
-                            value={name}
-                            placeholder="Enter new product name"
-                            onChange={ev => {setName(ev.target.value); setNameError("");}} 
+                            value={title}
+                            placeholder="Enter new book title"
+                            onChange={ev => {setTitle(ev.target.value); setTitleError("");}} 
                         />
-                        <ErrorLabel>{nameError}</ErrorLabel>
+                        <ErrorLabel>{titleError}</ErrorLabel>
                     </InputGroup>
 
                     <InputGroup>
                         <Dropdown
                             trigger={<Control
-                                value={selectedCategory?.name ?? ''}
-                                placeholder="Select product category"
+                                value={selectedAuthor?.name ?? ''}
+                                placeholder="Select book author"
                                 readOnly={true}
                                 style={{cursor: 'pointer'}} 
                             />}
 
-                            menu={productStore.categories.map(c => {
+                            menu={bookStore.authors.map(a => {
                                 return (
-                                    <button onClick={() => { setSelectedCategory(c); setCategoryError("")}}>
-                                        {c.name}
+                                    <button onClick={() => { setSelectedAuthor(a); setAuthorError("")}}>
+                                        {a.name}
                                     </button>
                                 )
                             })}
                         />
-                        <ErrorLabel>{categoryError}</ErrorLabel>
+                        <ErrorLabel>{authorError}</ErrorLabel>
                     </InputGroup>
 
                     <InputGroup style={{marginTop: '20px'}}>
                         <Control
                             type="number"
                             min="1" max="1000" 
-                            placeholder="Enter price for new product"
+                            placeholder="Enter price for new book"
                             onChange={ev => { setPrice(+ev.target.value); setPriceError("")}} 
                         />
                         <ErrorLabel>{priceError}</ErrorLabel>
                     </InputGroup>
 
-                    <TextControl
-                        placeholder="Enter product description"
-                        onChange={ev => setDescription(ev.target.value)} 
-                    />
-
                     <InputGroup style={{marginTop: '20px'}}>
                         <Control
                             type="file"
-                            placeholder="Select product image"
+                            placeholder="Select book image"
                             onChange={ev => {setImage(ev.target.value); selectFile(ev)}} 
                         />
                     </InputGroup>
@@ -202,4 +188,4 @@ const CreateProduct = observer((props) => {
     )
 });
 
-export default CreateProduct;
+export default CreateBook;

@@ -9,8 +9,8 @@ class RoleRepository {
 
             pool.query(
                 String.raw
-                    `INSERT INTO roles (name, "createdAt", "updatedAt")  
-                     VALUES ('${name}', NOW(), NOW()) RETURNING *`,
+                    `INSERT INTO roles (name)  
+                     VALUES ('${name}') RETURNING *`,
                 (error, results) => {
                     if (error) {
                         reject(error);

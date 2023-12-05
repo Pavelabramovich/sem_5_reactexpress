@@ -1,22 +1,29 @@
 const pool = require('../db');
 
 
-class ProductRepository {
+const authorIdToCamelCase = (book) => {
+    book.authorId = book.author_id; 
+    delete book.author_id; 
+    return book;
+}
 
-    static async create(product) {
+
+class BookRepository {
+
+    static async create(book) {
         return new Promise(function (resolve, reject) {
-            const {name, description, price, categoryId, img} = product;
+            const {title, price, authorId, image} = book;
 
             pool.query(
                 String.raw
-                    `INSERT INTO products (name, price, description, "categoryId", img, "createdAt", "updatedAt")  
-                     VALUES ('${name}', ${price}, '${description}', ${categoryId}, '${img}', NOW(), NOW()) RETURNING *`,
+                    `INSERT INTO books (title, price, "author_id", image)  
+                     VALUES ('${title}', ${price}, '${authorId}', '${image}') RETURNING *`,
                 (error, results) => {
                     if (error) {
                         reject(error);
                     }
                     if (results && results.rows) {
-                        resolve(results.rows[0]);
+                        resolve(results.rows.map(authorIdToCamelCase)[0]);
                     } else {
                         reject(new Error("No results found"));
                     }
@@ -26,19 +33,19 @@ class ProductRepository {
     };
 
 
-    static async getAll(categoryId) {
+    static async getAll(authorId) {
         try {
             return await new Promise(function (resolve, reject) {
-                let query = categoryId 
-                    ? String.raw`SELECT * FROM products p WHERE p."categoryId" = ${categoryId}`
-                    : String.raw`SELECT * FROM products p`;
+                let query = authorId 
+                    ? String.raw`SELECT * FROM books b WHERE b."author_id" = ${authorId}`
+                    : String.raw`SELECT * FROM books b`;
 
                 pool.query(query, (error, results) => {
                     if (error) {
                         reject(error);
                     }
                     if (results && results.rows) {
-                        resolve(results.rows);
+                        resolve(results.rows.map(authorIdToCamelCase));
                     } else {
                         reject(new Error("No results found"));
                     }
@@ -58,14 +65,14 @@ class ProductRepository {
 
         try {
             return await new Promise(function (resolve, reject) {
-                let query = String.raw`SELECT * FROM products p WHERE p."id" = ${id}`
+                let query = String.raw`SELECT * FROM books b WHERE b."id" = ${id}`
 
                 pool.query(query, (error, results) => {
                     if (error) {
                         reject(error);
                     }
                     if (results && results.rows) {
-                        resolve(results.rows[0]);
+                        resolve(results.rows.map(authorIdToCamelCase)[0]);
                     } else {
                         reject(new Error("No results found"));
                     }
@@ -78,21 +85,21 @@ class ProductRepository {
     };
 
 
-    static async getByName(name) {
-        if (!name) {
-            throw new Error("No name");
+    static async getByTitle(title) {
+        if (!title) {
+            throw new Error("No title");
         }
 
         try {
             return await new Promise(function (resolve, reject) {
-                let query = String.raw`SELECT * FROM products p WHERE p."name" = '${name}'`
+                let query = String.raw`SELECT * FROM books b WHERE b."title" = '${title}'`
 
                 pool.query(query, (error, results) => {
                     if (error) {
                         reject(error);
                     }
                     if (results && results.rows) {
-                        resolve(results.rows[0]);
+                        resolve(results.rows.map(authorIdToCamelCase)[0]);
                     } else {
                         reject(new Error("No results found"));
                     }
@@ -105,12 +112,12 @@ class ProductRepository {
     };
 
 
-    static async update(id, product) {
+    static async update(id, book) {
         return new Promise(function (resolve, reject) {
-            const {name, description, price, categoryId, img} = product;
-            const fields = {name, description, price, categoryId, img};
+            const {title, price, authorId, image} = book;
+            const fields = {title, price, author_id: authorId, image};
 
-            let query = "UPDATE products SET";
+            let query = "UPDATE books SET";
 
             for (let field in fields) {
                 if (fields[field]) {
@@ -129,7 +136,7 @@ class ProductRepository {
                     reject(error);
                 }
                 if (results && results.rows) {
-                    resolve(results.rows[0]);
+                    resolve(results.rows.map(authorIdToCamelCase)[0]);
                 } else {
                     reject(new Error("No results found"));
                 }
@@ -141,13 +148,13 @@ class ProductRepository {
     static async delete(id) {
         return new Promise(function (resolve, reject) {
             pool.query(
-                `DELETE FROM products WHERE id = ${id}`,
+                `DELETE FROM books WHERE id = ${id}`,
                 (error, results) => {
                     if (error) {
                         reject(error);
                     }
                     
-                    resolve(`Product deleted with ID: ${id}`);
+                    resolve(`Book deleted with ID: ${id}`);
                 }
             );
         });
@@ -155,4 +162,4 @@ class ProductRepository {
 }
 
 
-module.exports = ProductRepository;
+module.exports = BookRepository;

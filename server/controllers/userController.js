@@ -35,7 +35,7 @@ class UserController {
         const hashedPassword = await bcrypt.hash(password, 5);
 
         try {
-            const user = await UserRepository.create({login, password: hashedPassword, roleId: 1}, { validate: true });
+            const user = await UserRepository.create({login, password: hashedPassword, roleId: 1});
             const token = generateJwt(user.id, login, 1);
 
             return res.json({token})

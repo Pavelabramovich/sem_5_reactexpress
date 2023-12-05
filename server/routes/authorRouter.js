@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 
-const controller = require('../controllers/categoryController');
+const controller = require('../controllers/authorController');
 const checkRole = require('../middlewares/checkRoleMiddleware');
 
 router.get('/', controller.getAll);

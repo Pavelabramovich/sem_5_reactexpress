@@ -1,6 +1,14 @@
 const pool = require('../db');
 
 
+const roleIdToCamelCase = (user) => {
+    user.roleId = user.role_id; 
+    delete user.role_id; 
+    return user;
+}
+
+
+
 class UserRepository {
 
     static async create(user) {
@@ -9,14 +17,14 @@ class UserRepository {
 
             pool.query(
                 String.raw
-                    `INSERT INTO users (login, password, "roleId", "createdAt", "updatedAt")  
-                     VALUES ('${login}', '${password}', '${roleId}', NOW(), NOW()) RETURNING *`,
+                    `INSERT INTO users (login, password, name, "role_id")  
+                     VALUES ('${login}', '${password}', TempPlaceholer, '${roleId}') RETURNING *`,
                 (error, results) => {
                     if (error) {
                         reject(error);
                     }
                     if (results && results.rows) {
-                        resolve(results.rows[0]);
+                        resolve(results.rows.map(roleIdToCamelCase)[0]);
                     } else {
                         reject(new Error("No results found"));
                     }
@@ -30,7 +38,7 @@ class UserRepository {
         try {
             return await new Promise(function (resolve, reject) {
                 let query = categoryId 
-                    ? String.raw`SELECT * FROM users u WHERE u."roleId" = ${roleId}`
+                    ? String.raw`SELECT * FROM users u WHERE u."role_id" = ${roleId}`
                     : String.raw`SELECT * FROM users u`;
 
                 pool.query(query, (error, results) => {
@@ -38,7 +46,7 @@ class UserRepository {
                         reject(error);
                     }
                     if (results && results.rows) {
-                        resolve(results.rows);
+                        resolve(results.rows.map(roleIdToCamelCase));
                     } else {
                         reject(new Error("No results found"));
                     }
@@ -65,7 +73,7 @@ class UserRepository {
                         reject(error);
                     }
                     if (results && results.rows) {
-                        resolve(results.rows[0]);
+                        resolve(results.rows.map(roleIdToCamelCase)[0]);
                     } else {
                         reject(new Error("No results found"));
                     }
@@ -92,7 +100,7 @@ class UserRepository {
                         reject(error);
                     }
                     if (results && results.rows) {
-                        resolve(results.rows[0]);
+                        resolve(results.rows.map(roleIdToCamelCase)[0]);
                     } else {
                         reject(new Error("No results found"));
                     }
@@ -108,7 +116,7 @@ class UserRepository {
     static async update(id, user) {
         return new Promise(function (resolve, reject) {
             const {login, password, roleId} = user;
-            const fields = {login, password, roleId};
+            const fields = {login, password, role_id: roleId};
 
             let query = "UPDATE users SET";
 
@@ -129,7 +137,7 @@ class UserRepository {
                     reject(error);
                 }
                 if (results && results.rows) {
-                    resolve(results.rows[0]);
+                    resolve(results.rows.map(roleIdToCamelCase)[0]);
                 } else {
                     reject(new Error("No results found"));
                 }

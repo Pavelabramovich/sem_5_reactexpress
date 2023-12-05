@@ -108,13 +108,6 @@ function Login() {
                 >
                     Log in
                 </Button>
-
-                {/* <Button2
-                    style={{ background: '#F4a0b5' }}
-                    onClick={onLogin}
-                >
-                    Log in
-                </Button2> */}
             </InputGroup>
 
             <p>Not registered? <NavLink className={styles.registerLink} to={REGISTRATION_URL}>Register</ NavLink></p>

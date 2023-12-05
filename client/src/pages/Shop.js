@@ -1,34 +1,34 @@
 import React, { useContext, useEffect, useState } from 'react';
-import CategoryBar from '../components/CategoryBar';
-import ProductList from '../components/ProductList';
+import AuthorBar from '../components/AuthorBar';
+import BookList from '../components/BookList';
 import { InputGroup, Control, ErrorLabel, TextControl } from '../components/Control';
 import { Context } from '../index';
 import { observer } from 'mobx-react-lite';
-import { getCategories, getProducts } from '../http/productAPI';
+import { getAuthors, getBooks } from '../http/bookAPI';
 
 const Shop = observer(() => {
-    const {productStore} = useContext(Context);
+    const {bookStore} = useContext(Context);
 
     const [search, setSearch] = useState("");
 
     useEffect(() => {
-        getCategories()
-            .then(categories => {
-                productStore.setCategories(categories);
+        getAuthors()
+            .then(authors => {
+                bookStore.setAuthors(authors);
             });
 
-        getProducts()
-            .then(products => {
-                productStore.setProducts(products.rows);
+        getBooks()
+            .then(books => {
+                bookStore.setBooks(books.rows);
             });
     }, []);
 
     useEffect(() => {
-        getProducts(productStore.selectedCategory?.id)
-            .then(products => {
-                productStore.setProducts(products.rows);
+        getBooks(bookStore.selectedAuthor?.id)
+            .then(books => {
+                bookStore.setBooks(books.rows);
             });
-    }, [productStore.selectedCategory])
+    }, [bookStore.selectedAuthor])
 
     return (
         <div style={{display: 'flex'}}>
@@ -37,15 +37,15 @@ const Shop = observer(() => {
                     <Control style={{width: '90%', margin: '15px'}}
                         value={search}
                         placeholder="Search"
-                        onChange={ev => {setSearch(ev.target.value); productStore.setPattern(ev.target.value);}} 
+                        onChange={ev => {setSearch(ev.target.value); bookStore.setPattern(ev.target.value);}} 
                     />
                 </InputGroup>
 
-                <CategoryBar />
+                <AuthorBar />
             </div>
 
             <div style={{width: 'calc(100% * 3/4)'}}>
-                <ProductList />
+                <BookList />
             </div>
         </div>
     );

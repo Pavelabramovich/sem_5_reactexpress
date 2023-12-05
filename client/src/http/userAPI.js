@@ -25,6 +25,7 @@ export const login = async (login, password) => {
     try {
         const {data} = await $host.post('api/user/login', {login, password});
         localStorage.setItem('token', data.token)
+
         return jwtDecode(data.token);
     } catch (e) {
         throw (JSON.parse(e?.response?.data?.message) || "Unexpected error");
@@ -47,10 +48,4 @@ export const createRole = async (name) => {
 export const getRoles = async () => {
     const {data} = await $host.get('api/role');
     return data;
-}
-
-
-export const getTime = async () => {
-    const {data} = await $authHost.get('api/user/time');
-    return [data[0], data[1]];
 }

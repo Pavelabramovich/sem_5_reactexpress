@@ -1,35 +1,34 @@
-import styles from "./UpdateProduct.module.css";
+import styles from "./UpdateBook.module.css";
 import { useState, useContext, useEffect } from 'react';
 import Modal from './Modal';
 import Button from '../Button';
 import Dropdown from '../Dropdown';
 import { InputGroup, Control, ErrorLabel, TextControl } from '../Control';
 import { Context } from '../../index';
-import { getCategories, updateProduct, getProducts } from '../../http/productAPI';
+import { getAuthors, updateBook, getBooks } from '../../http/bookAPI';
 import { observer } from 'mobx-react-lite';
 
 
-const UpdateProduct = observer((props) => {
-    const {productStore} = useContext(Context);
-    const product = props.product || {};
+const UpdateBook = observer((props) => {
+    const {bookStore} = useContext(Context);
+    const book = props.book || {};
 
     const isOpen = props.isOpen;
     const setIsOpen = props.setIsOpen;
 
-    const [name, setName] = useState(product.name || "");
-    const [selectedCategory, setSelectedCategory] = useState(productStore.categories.find(c => c.id === product.categoryId));
-    const [price, setPrice] = useState(product.price || 100);
-    const [description, setDescription] = useState(product.description || "");
+    const [title, setTitle] = useState(book.title || "");
+    const [selectedAuthor, setSelectedAuthor] = useState(bookStore.authors.find(a => a.id === book.authorId));
+    const [price, setPrice] = useState(book.price || "");
     const [image, setImage] = useState("");
 
-    const [nameError, setNameError] = useState("");
-    const [categoryError, setCategoryError] = useState("");
+    const [titleError, setTitleError] = useState("");
+    const [authorError, setAuthorError] = useState("");
     const [priceError, setPriceError] = useState("");
 
     useEffect(() => {
-        getCategories()
-            .then(categories => {
-                productStore.setCategories(categories);
+        getAuthors()
+            .then(authors => {
+                bookStore.setAuthors(authors);
             });
     }, [props]);
 
@@ -42,23 +41,23 @@ const UpdateProduct = observer((props) => {
     function onAdd() {
         var isError = false;
 
-        if (!nameError) {
-            if (name === "") {
-                setNameError("Enter product name");
+        if (!titleError) {
+            if (title === "") {
+                setTitleError("Enter book title");
                 isError = true;
             } else {
-                setNameError("");
+                setTitleError("");
             }
         } else {
             isError = true;
         }
 
-        if (!categoryError) {
-            if (selectedCategory === null) {
-                setCategoryError("Select category");
+        if (!authorError) {
+            if (selectedAuthor === null) {
+                setAuthorError("Select author");
                 isError = true;
             } else {
-                setCategoryError("");
+                setAuthorError("");
             }
         } else {
             isError = true;
@@ -66,7 +65,7 @@ const UpdateProduct = observer((props) => {
 
         if (!priceError) {
             if (price === null) {
-                setPriceError("Enter product price");
+                setPriceError("Enter book price");
                 isError = true;
             } else {
                 setPriceError("");
@@ -80,49 +79,45 @@ const UpdateProduct = observer((props) => {
         }
 
         const formData = new FormData();
-        formData.append('name', name);
-        formData.append('categoryId', `${selectedCategory.id}`);
+        formData.append('title', title);
+        formData.append('authorId', `${selectedAuthor.id}`);
         formData.append('price', `${price}`);
-        formData.append('description', description);
 
         if (image !== "") {
-            formData.append('img', image);
+            formData.append('image', image);
         }
 
-        updateProduct(product.id, formData)
-            .then(newProduct => {
+        updateBook(book.id, formData)
+            .then(newBook => {
                 if (props.reload) {
-                    props.reload(newProduct);
+                    props.reload(newBook);
                 }
 
-
-                setName(newProduct.name);
-                setSelectedCategory(productStore.categories.find(c => c.id === newProduct.categoryId));
-                setPrice(newProduct.price);
-                setDescription(newProduct.description);
+                setTitle(newBook.title);
+                setSelectedAuthor(bookStore.authors.find(a => a.id === newBook.authorId));
+                setPrice(newBook.price);
                 setImage("");
 
-                setNameError("");
-                setCategoryError("");
+                setTitleError("");
+                setAuthorError("");
                 setPriceError("");
 
                 setIsOpen(false);
             })
             .catch(e => {
-                setNameError("Product with this name already exists");
+                setTitleError("Book with this title already exists");
                 console.log(e);
             });
     }
 
     function onCancel() {
-        setName(product.name);
-        setSelectedCategory(productStore.categories.find(c => c.id === product.categoryId));
-        setPrice(product.price);
-        setDescription(product.description);
+        setTitle(book.title);
+        setSelectedAuthor(bookStore.authors.find(a => a.id === book.authorId));
+        setPrice(book.price);
         setImage("");
 
-        setNameError("");
-        setCategoryError("");
+        setTitleError("");
+        setAuthorError("");
         setPriceError("");
 
         setIsOpen(false);
@@ -133,37 +128,37 @@ const UpdateProduct = observer((props) => {
         <Modal isOpen={isOpen} setIsOpen={setIsOpen} onClose={onCancel}>
             <div>
                 <div className={styles.header}>
-                    <h5 className={styles.heading}>Update product</h5>
+                    <h5 className={styles.heading}>Update book</h5>
                 </div>
             
                 <div className={styles.content}>
                     <InputGroup>
                         <Control
-                            value={name}
-                            placeholder="Change product name"
-                            onChange={ev => {setName(ev.target.value); setNameError("");}} 
+                            value={title}
+                            placeholder="Change book title"
+                            onChange={ev => {setTitle(ev.target.value); setTitleError("");}} 
                         />
-                        <ErrorLabel>{nameError}</ErrorLabel>
+                        <ErrorLabel>{titleError}</ErrorLabel>
                     </InputGroup>
 
                     <InputGroup>
                         <Dropdown
                             trigger={<Control
-                                value={selectedCategory?.name ?? ''}
-                                placeholder="Change product category"
+                                value={selectedAuthor?.name ?? ''}
+                                placeholder="Change book author"
                                 readOnly={true}
                                 style={{cursor: 'pointer'}} 
                             />}
 
-                            menu={productStore.categories.map(c => {
+                            menu={bookStore.authors.map(a => {
                                 return (
-                                    <button onClick={() => { setSelectedCategory(c); setCategoryError("")}}>
-                                        {c.name}
+                                    <button onClick={() => { setSelectedAuthor(a); setAuthorError("")}}>
+                                        {a.name}
                                     </button>
                                 )
                             })}
                         />
-                        <ErrorLabel>{categoryError}</ErrorLabel>
+                        <ErrorLabel>{authorError}</ErrorLabel>
                     </InputGroup>
 
                     <InputGroup style={{marginTop: '20px'}}>
@@ -171,22 +166,16 @@ const UpdateProduct = observer((props) => {
                             type="number"
                             min="0" max="1000" 
                             value={price}
-                            placeholder="Change product price"
+                            placeholder="Change book price"
                             onChange={ev => { setPrice(+ev.target.value); setPriceError("")}} 
                         />
                         <ErrorLabel>{priceError}</ErrorLabel>
                     </InputGroup>
 
-                    <TextControl
-                        placeholder="Enter product description"
-                        value={description}
-                        onChange={ev => setDescription(ev.target.value)} 
-                    />
-
                     <InputGroup style={{marginTop: '20px'}}>
                         <Control
                             type="file"
-                            placeholder="Change product image"
+                            placeholder="Change book image"
                             onChange={ev => {setImage(ev.target.value); selectFile(ev)}} 
                         />
                     </InputGroup>
@@ -207,4 +196,4 @@ const UpdateProduct = observer((props) => {
     )
 });
 
-export default UpdateProduct;
+export default UpdateBook;

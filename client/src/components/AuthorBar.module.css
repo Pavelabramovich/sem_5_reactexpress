@@ -1,4 +1,4 @@
-.categoryItem {
+.authorItem {
     margin: 10px;
     padding: 10px;
     border: 1px solid #bbb;
@@ -10,20 +10,20 @@
     transition: color .17s ease-in-out, background-color .17s ease-in-out, border-color .17s ease-in-out, box-shadow .17s ease-in-out;
 }
 
-.categoryItem:hover {
+.authorItem:hover {
     background-color: #ccc;
 }
 
-.categoryItem:active {
+.authorItem:active {
     background-color: #aaa;
 }
   
-.categoryItem span {
+.authorItem span {
     font-size: 1.2em;
     text-decoration: none;
     color: #333;
 }
 
-.categoryItem.selected {
+.authorItem.selected {
     background-color: #aaa;
 }

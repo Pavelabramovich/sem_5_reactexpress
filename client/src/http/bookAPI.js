@@ -1,14 +1,11 @@
 import { $host, $authHost } from './index';
 
 
-export const createProduct = async (product) => {
+export const createBook = async (book) => {
     try {
-        const {data} = await $authHost.post('api/product', product);
+        const {data} = await $authHost.post('api/product', book);
         return data;
     } catch (e) {
-        console.log(e);
-        console.log(JSON.stringify(e));
-
         let fieldError;
 
         try {
@@ -21,38 +18,38 @@ export const createProduct = async (product) => {
     }
 }
 
-export const getProducts = async (categoryId) => {
-    const res = await $host.get('api/product', { params: {categoryId}});
+export const getBooks = async (authorId) => {
+    const res = await $host.get('api/product', { params: {authorId}});
 
     const {data} = res;
     return data;
 }
 
 
-export const getProduct = async (id) => {
+export const getBook = async (id) => {
     const {data} = await $host.get(`api/product/${id}`);
     return data;
 }
 
 
-export const updateProduct = async (id, product) => {
-    const {data} = await $authHost.patch(`api/product/${id}`, product);
+export const updateBook = async (id, book) => {
+    const {data} = await $authHost.patch(`api/product/${id}`, book);
     return data;
 }
 
 
-export const deleteProduct = async (id) => {
+export const deleteBook = async (id) => {
     const {data} = await $authHost.delete(`api/product/${id}`);
     return data;
 }
 
 
-export const createCategory = async (name) => {
+export const createAuthor = async (name) => {
     const {data} = await $authHost.post('api/category', {name});
     return data;
 }
 
-export const getCategories = async () => {
+export const getAuthors = async () => {
     const {data} = await $host.get('api/category');
     return data;
 }
