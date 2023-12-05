@@ -1,15 +1,14 @@
-import styles from "./CreateRole.module.css";
+import styles from "./CreateCategory.module.css";
 import { useState, useContext } from 'react'
 import Modal from '../Modal';
 import Button from '../../Button';
 import { Context } from '../../../index';
 import { InputGroup, Control, ErrorLabel } from '../../Control';
+import { createCategory, getCategories } from "../../../http/bookAPI";
 
-import { createRole, getRoles } from "../../../http/userAPI";
 
-
-const CreateRole = (props) => {
-    const {userStore} = useContext(Context);
+const CreateCategory = (props) => {
+    const {bookStore} = useContext(Context);
     const isOpen = props.isOpen;
     const setIsOpen = props.setIsOpen;
 
@@ -18,21 +17,21 @@ const CreateRole = (props) => {
 
     function onAdd() {
         if (name === "") {
-            setNameError("Enter role name");
+            setNameError("Enter category name");
         }
 
-        createRole(name)
-            .then(role => {
-                getRoles()
-                    .then(roles => {
-                        userStore.setRoles(roles);
+        createCategory(name)
+            .then(category => {
+                getCategories()
+                    .then(categories => {
+                        bookStore.setCategories(categories);
                     });
 
                 setName("");
                 setIsOpen(false);
             })
             .catch(e => {
-                setNameError("Role with this name already exists");
+                setNameError("Category with this name already exists");
             });
     }
 
@@ -46,14 +45,14 @@ const CreateRole = (props) => {
         <Modal isOpen={isOpen} setIsOpen={setIsOpen} onClose={onCancel}>
             <div>
                 <div className={styles.header}>
-                    <h5 className={styles.heading}>Add role</h5>
+                    <h5 className={styles.heading}>Add category</h5>
                 </div>
             
                 <div className={styles.content}>
                     <InputGroup>
                         <Control
                             value={name}
-                            placeholder="Enter new role name"
+                            placeholder="Enter new category name"
                             onChange={ev => {setName(ev.target.value); setNameError("");}} 
                         />
                         <ErrorLabel>{nameError}</ErrorLabel>
@@ -74,4 +73,5 @@ const CreateRole = (props) => {
     )
 }
 
-export default CreateRole;
+
+export default CreateCategory;

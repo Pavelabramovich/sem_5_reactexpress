@@ -90,6 +90,31 @@ class BookController {
         }
     };
 
+    async updateCategories(req, res, next) {
+        try {
+            const {id} = req.params;
+            const {categoriesId} = req.body;
+
+            const newCategories = await BookRepository.updateCategories(id, categoriesId);
+            return res.json(newCategories);
+            
+        } catch (e) {
+            return next(ApiError.badRequest(e.message));
+        }
+    }
+
+    async getCategories(req, res, next) {
+        try {
+            const {id} = req.params;
+            
+            const categories = await BookRepository.getCategories(id);
+            return res.json(categories);
+            
+        } catch (e) {
+            return next(ApiError.badRequest(e.message));
+        }
+    }
+
     async delete(req, res, next) {
         try {
             const {id} = req.params;

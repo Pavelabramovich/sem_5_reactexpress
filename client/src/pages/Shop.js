@@ -44,8 +44,13 @@ const Shop = observer(() => {
                         onChange={ev => {setSearch(ev.target.value); bookStore.setPattern(ev.target.value);}} 
                     />
                 </InputGroup>
-
-                <AuthorBar />
+                
+                <div style={{width: 'calc(100% /2)'}}>
+                    <AuthorBar />
+                </div>
+                <div style={{width: 'calc(100% /2)'}}>
+                    {/* <AuthorBar /> */}
+                </div>
             </div>
 
             <div style={{width: 'calc(100% * 3/4)'}}>

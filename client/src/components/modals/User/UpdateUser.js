@@ -17,13 +17,14 @@ const UpdateUser = observer((props) => {
     const isOpen = props.isOpen;
     const setIsOpen = props.setIsOpen;
 
-    const [selectedRole, setSelectedRole] = useState(userStore.roles.find(r => r.id === user.roleId));
+    let [selectedRole, setSelectedRole] = useState(userStore.roles.find(r => r.id === user.roleId));
     const [roleError, setRoleError] = useState("");
 
     useEffect(() => {
         getRoles()
             .then(roles => {
                 userStore.setRoles(roles);
+                setSelectedRole(userStore.roles.find(r => r.id === user.roleId));
             });
     }, [props]);
 

@@ -3,11 +3,14 @@ import { makeAutoObservable } from 'mobx';
 
 export default class BookStore {
     constructor() {
-        this._authors = [];
         this._books = [];
+
+        this._authors = [];
+        this._categories = [];
         this._pattern = "";
 
         this._selectedAuthor = null;
+        this._selectedCategory = null;
 
         makeAutoObservable(this);
     }
@@ -16,12 +19,20 @@ export default class BookStore {
         this._authors = authors;
     }
 
+    setCategories(categories) {
+        this._categories = categories;
+    }
+
     setBooks(books) {
         this._books = books;
     }
 
     selectAuthor(author) {
         this._selectedAuthor = author;
+    }
+
+    selectCategory(category) {
+        this._selectedCategory = category;
     }
 
     setPattern(pattern) {
@@ -36,8 +47,16 @@ export default class BookStore {
         return this._authors;
     }
 
+    get categories() {
+        return this._categories;
+    }
+
     get selectedAuthor() {
         return this._selectedAuthor;
+    }
+
+    get selectedCategory() {
+        return this._selectedCategory;
     }
 
     get pattern() {

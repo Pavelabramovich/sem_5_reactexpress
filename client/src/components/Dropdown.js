@@ -6,7 +6,7 @@ import styles from './Dropdown.module.css';
 
 
 
-const Dropdown = ({ trigger, menu }) => {
+const Dropdown = ({ trigger, menu, closeOnClick }) => {
     const { ref, isComponentVisible: open, setIsComponentVisible: setOpen } = useComponentVisible(false);
   
     const handleOpen = () => {
@@ -27,7 +27,10 @@ const Dropdown = ({ trigger, menu }) => {
                                 onClick: (e) => {
                                     menuItem.props.onClick(e);
                                     
-                                    setOpen(false);
+                                    if (closeOnClick === undefined || closeOnClick === true) {
+                                        setOpen(false);
+                                    }
+                                    
                                 },
                             })}
                         </li>

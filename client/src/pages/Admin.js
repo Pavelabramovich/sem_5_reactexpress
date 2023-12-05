@@ -7,6 +7,7 @@ import { observer } from 'mobx-react-lite';
 import { Context } from '../index';
 import AdminAuthorList from '../components/tables/AdminAuthorList';
 import AdminUserList from '../components/tables/AdminUserList';
+import AdminCategoryList from '../components/tables/AdminCategoryList';
 
 
 const Admin = observer(() => {
@@ -25,7 +26,9 @@ const Admin = observer(() => {
                     ? <AdminAuthorList />
                 : adminStore.selectedEntityId == 3
                     ? <AdminUserList />
-                : 
+                : adminStore.selectedEntityId == 4
+                    ? <AdminCategoryList />
+                :
                     <></>  
                 }  
             </div>

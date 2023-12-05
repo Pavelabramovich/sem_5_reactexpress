@@ -13,6 +13,7 @@
     border: 1px solid grey;
     border-radius: 15px;
     width: auto;
+    z-index: 10;
 }
   
 .menu > li {

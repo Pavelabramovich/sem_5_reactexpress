@@ -23,7 +23,7 @@ const EntityBar = observer(() => {
    
     return (
         <div style={{textAlign: 'center'}}>
-            <h1 style={{fontSize: '20px', fontWeight: 'bold', marginTop: '8px'}}>Authors</h1>
+            <h1 style={{fontSize: '20px', fontWeight: 'bold', marginTop: '8px'}}>Entities</h1>
 
             <div>
                 {entities.map(e => 

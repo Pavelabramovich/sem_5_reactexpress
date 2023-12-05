@@ -1,26 +1,26 @@
 const ApiError = require('../errors/apiError');
 
-const AuthorRepository = require('../repositories/AuthorRepository');
+const CategoryRepository = require('../repositories/CategoryRepository');
 
 
-class AuthorController {
+class CategoryController {
     async create(req, res, next) {
         const {name} = req.body;
 
-        const authorWithSameName = await AuthorRepository.getByName(name);
+        const categotyWithSameName = await CategoryRepository.getByName(name);
 
-        if (authorWithSameName) {
+        if (categotyWithSameName) {
             return next(ApiError.badRequest("Author with same name already exists."));
         }
 
-        const author = await AuthorRepository.create({name});
+        const category = await CategoryRepository.create({name});
 
-        return res.json(author);
+        return res.json(category);
     }
 
     async getAll(req, res) {
-        const authors = await AuthorRepository.getAll();
-        return res.json(authors);
+        const categories = await CategoryRepository.getAll();
+        return res.json(categories);
     }
 
     async update(req, res, next) {
@@ -28,9 +28,9 @@ class AuthorController {
             const {id} = req.params;
             const {name} = req.body;
 
-            const author = await AuthorRepository.update(id, name);
-      
-            return res.json(author);
+            const category = await CategoryRepository.update(id, name);
+                
+            return res.json(category);
             
         } catch (e) {
             return next(ApiError.badRequest(e.message));
@@ -41,7 +41,7 @@ class AuthorController {
         try {
             const {id} = req.params;
             
-            const result = await AuthorRepository.delete(id);
+            const result = await CategoryRepository.delete(id);
         
             res.status(204).json();
         } catch (e) {
@@ -50,4 +50,4 @@ class AuthorController {
     }
 }
 
-module.exports = new AuthorController();
+module.exports = new CategoryController();

@@ -3,7 +3,7 @@ import { makeAutoObservable } from 'mobx';
 
 export default class AdminStore {
     constructor() {
-        this._entities = { 1: 'Books', 2: 'Authors', 3: 'Users'};
+        this._entities = { 1: 'Books', 2: 'Authors', 3: 'Users', 4: 'Categories'};
         this._selectedEntityId = 1;
 
         makeAutoObservable(this);

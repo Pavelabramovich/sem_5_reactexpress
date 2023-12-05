@@ -5,13 +5,12 @@ import Button from '../../Button';
 import Dropdown from '../../Dropdown';
 import { InputGroup, Control, ErrorLabel, TextControl } from '../../Control';
 import { Context } from '../../../index';
-import { getAuthors, getBooks,  createBook } from '../../../http/bookAPI';
+import { getAuthors, getBooks,  createBook, getCategories, updateBookCategories } from '../../../http/bookAPI';
 import { observer } from 'mobx-react-lite';
 
 
 const CreateBook = observer((props) => {
     const {bookStore} = useContext(Context);
-    const authors = bookStore.authors;
 
     const isOpen = props.isOpen;
     const setIsOpen = props.setIsOpen;
@@ -20,6 +19,7 @@ const CreateBook = observer((props) => {
     const [selectedAuthor, setSelectedAuthor] = useState(null);
     const [price, setPrice] = useState("");
     const [image, setImage] = useState("");
+    const [categories, setCategories] = useState({});
 
     const [titleError, setTitleError] = useState("");
     const [authorError, setAuthorError] = useState("");
@@ -35,11 +35,26 @@ const CreateBook = observer((props) => {
             .then(books => {
                bookStore.setBooks(books.rows);
             });
+
+        getCategories()
+            .then(categories => {
+                bookStore.setCategories(categories);
+            })
     }, [props]);
 
 
     const selectFile = (e) => {
         setImage(e.target.files[0]);
+    }
+
+    const addCategory = (category) => {
+        setCategories({...categories, [category.id]: category.name})
+    }
+
+    const removeCategory = (category) => {
+        let newCategories = {...categories};
+        delete newCategories[category.id];
+        setCategories(newCategories);
     }
 
 
@@ -91,6 +106,10 @@ const CreateBook = observer((props) => {
 
         createBook(formData)
             .then(book => {
+                updateBookCategories(book.id, Object.keys(categories))
+                    .then(newBookCategories => {
+
+                    });
                 onCancel();
             })
             .catch(e => {
@@ -108,6 +127,7 @@ const CreateBook = observer((props) => {
         setSelectedAuthor(null);
         setPrice(0);
         setImage("");
+        setCategories([]);
 
         setTitleError("");
         setAuthorError("");
@@ -152,6 +172,30 @@ const CreateBook = observer((props) => {
                             })}
                         />
                         <ErrorLabel>{authorError}</ErrorLabel>
+                    </InputGroup>
+
+                    <InputGroup>
+                        <Dropdown
+                            trigger={<Control
+                                value={Object.values(categories).join()}
+                                placeholder="Select book categories"
+                                readOnly={true}
+                                style={{cursor: 'pointer'}} 
+                            />}
+
+                            menu={bookStore.categories.map(c => {
+                                return (
+                                    <button 
+                                        onClick={() => {(c.id in categories) ? removeCategory(c) : addCategory(c)}} 
+                                        style={{background: (c.id in categories ? 'gray' : 'inherit')}}
+                                    >
+                                        {c.name}
+                                    </button>
+                                )
+                            })}
+
+                            closeOnClick={false}
+                        />
                     </InputGroup>
 
                     <InputGroup style={{marginTop: '20px'}}>

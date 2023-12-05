@@ -37,6 +37,16 @@ export const updateBook = async (id, book) => {
     return data;
 }
 
+export const getBookCategories = async (id) => {
+    const {data} = await $host.get(`api/book/${id}/categories`)
+    //alert(data);
+    return data;
+}
+
+export const updateBookCategories = async (id, categoriesId) => {
+    const {data} = await $authHost.post(`api/book/${id}/categories`, {categoriesId})
+    return data;
+}
 
 export const deleteBook = async (id) => {
     const {data} = await $authHost.delete(`api/book/${id}`);
@@ -64,3 +74,27 @@ export const deleteAuthor = async (id) => {
     const {data} = await $authHost.delete(`api/author/${id}`);
     return data;
 }
+
+
+
+export const createCategory = async (name) => {
+    const {data} = await $authHost.post('api/category', {name});
+    return data;
+}
+
+export const getCategories = async () => {
+    const {data} = await $host.get('api/category');
+    return data;
+}
+
+export const updateCategory = async (id, category) => {
+    const {data} = await $authHost.patch(`api/category/${id}`, category);
+    return data;
+}
+
+export const deleteCategory = async (id) => {
+    const {data} = await $authHost.delete(`api/category/${id}`);
+    return data;
+}
+
+

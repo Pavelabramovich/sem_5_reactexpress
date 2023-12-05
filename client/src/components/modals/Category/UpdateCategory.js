@@ -1,43 +1,46 @@
-import styles from "./CreateRole.module.css";
-import { useState, useContext } from 'react'
+import styles from "./UpdateCategory.module.css";
+import { useState, useContext, useEffect } from 'react';
 import Modal from '../Modal';
 import Button from '../../Button';
-import { Context } from '../../../index';
 import { InputGroup, Control, ErrorLabel } from '../../Control';
+import { updateCategory } from "../../../http/bookAPI";
+import { observer } from 'mobx-react-lite';
+import { Context } from '../../../index';
+import { getCategoris, updateBook, getBooks } from '../../../http/bookAPI';
 
-import { createRole, getRoles } from "../../../http/userAPI";
 
-
-const CreateRole = (props) => {
-    const {userStore} = useContext(Context);
+const UpdateCategory = observer((props) => {
     const isOpen = props.isOpen;
     const setIsOpen = props.setIsOpen;
+    const {bookStore} = useContext(Context);
+    const category = props.category || {};
 
-    const [name, setName] = useState("");
+    const [name, setName] = useState(category.name || "");
     const [nameError, setNameError] = useState("");
 
-    function onAdd() {
+    
+    function onUpdate() {
         if (name === "") {
-            setNameError("Enter role name");
+            setNameError("Enter category name");
         }
 
-        createRole(name)
-            .then(role => {
-                getRoles()
-                    .then(roles => {
-                        userStore.setRoles(roles);
-                    });
+        updateCategory(category.id, {name})
+            .then(newCategory => {
+                if (props.reload) {
+                    props.reload(newCategory)
+                }
 
-                setName("");
+                setName(newCategory.name);
+                setNameError("");
                 setIsOpen(false);
             })
             .catch(e => {
-                setNameError("Role with this name already exists");
+                setNameError(JSON.stringify(e));
             });
     }
 
     function onCancel() {
-        setName("");
+        setName(category.name);
         setNameError("");
         setIsOpen(false);
     }
@@ -46,14 +49,14 @@ const CreateRole = (props) => {
         <Modal isOpen={isOpen} setIsOpen={setIsOpen} onClose={onCancel}>
             <div>
                 <div className={styles.header}>
-                    <h5 className={styles.heading}>Add role</h5>
+                    <h5 className={styles.heading}>Update category</h5>
                 </div>
             
                 <div className={styles.content}>
                     <InputGroup>
                         <Control
                             value={name}
-                            placeholder="Enter new role name"
+                            placeholder="Change category name"
                             onChange={ev => {setName(ev.target.value); setNameError("");}} 
                         />
                         <ErrorLabel>{nameError}</ErrorLabel>
@@ -61,8 +64,8 @@ const CreateRole = (props) => {
                 </div>
                 <div className={styles.actions}>
                     <div className={styles.container}>
-                        <Button className={styles.btn} style={{background: '#13a4FD'}} onClick={onAdd}>
-                            Add
+                        <Button className={styles.btn} style={{background: '#13a4FD'}} onClick={onUpdate}>
+                            Save
                         </Button>
                         <Button className={styles.btn} style={{background: '#ff4050'}} onClick={onCancel}>
                             Cancel
@@ -72,6 +75,7 @@ const CreateRole = (props) => {
             </div>
         </Modal>
     )
-}
+});
 
-export default CreateRole;
+
+export default UpdateCategory;

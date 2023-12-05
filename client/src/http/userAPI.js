@@ -47,7 +47,6 @@ export const getUsers = async (roleId) => {
 }
 
 
-
 export const updateUser = async (id, user) => {
     const {data} = await $authHost.patch(`api/user/${id}`, user);
     return data;

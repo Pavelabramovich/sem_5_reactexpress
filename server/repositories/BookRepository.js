@@ -7,6 +7,16 @@ const authorIdToCamelCase = (book) => {
     return book;
 }
 
+const bookCategoryToCamelCase = (bookCategory) => {
+    bookCategory.bookId =  bookCategory.book_id;
+    bookCategory.categoryId =  bookCategory.category_id;
+
+    delete bookCategory.book_id; 
+    delete bookCategory.category_id;
+    
+    return bookCategory;
+}
+
 
 class BookRepository {
 
@@ -145,6 +155,62 @@ class BookRepository {
             });
         });
     };
+
+
+    static async updateCategories(id, categoriesId) {
+        return new Promise(function (resolve, reject) {
+            let query = String.raw`DELETE FROM books_categories WHERE book_id = ${id};`
+
+            if (categoriesId.length) {
+                
+                query += `INSERT INTO books_categories (book_id, category_id) VALUES`
+            
+                categoriesId.forEach(categoryId => {
+                    query += ` (${id}, ${categoryId}),`
+                });
+
+                if (query.endsWith(',')) {
+                    query = query.slice(0, -1);
+                }
+
+                query += String.raw` ON CONFLICT ("book_id", "category_id") DO NOTHING;`
+            }
+
+            pool.query(query, (error, results) => {
+                if (error) {
+                    reject(error);
+                }else {
+                    resolve(true);
+                } 
+            });
+            
+        });
+    }
+
+
+    static async getCategories(id) {
+        return new Promise(function (resolve, reject) {
+            let query = String.raw
+            `SELECT 
+                c.id AS id,
+                c.name AS name
+                
+                FROM books_categories bc
+                     JOIN books b ON bc.book_id = b.id AND b.id = '${id}'
+                     JOIN categories c ON bc.category_id = c.id;`;
+
+            pool.query(query, (error, results) => {
+                if (error) {
+                    reject(error);
+                }
+                if (results && results.rows) {
+                    resolve(results.rows);
+                } else {
+                    reject(new Error("No results found"));
+                }
+            });
+        });
+    }
 
 
     static async delete(id) {

@@ -5,7 +5,7 @@ import Button from '../../Button';
 import Dropdown from '../../Dropdown';
 import { InputGroup, Control, ErrorLabel, TextControl } from '../../Control';
 import { Context } from '../../../index';
-import { getAuthors, updateBook, getBooks } from '../../../http/bookAPI';
+import { getAuthors, updateBook, getBooks, getCategories, updateBookCategories, getBookCategories } from '../../../http/bookAPI';
 import { observer } from 'mobx-react-lite';
 
 
@@ -20,6 +20,10 @@ const UpdateBook = observer((props) => {
     const [selectedAuthor, setSelectedAuthor] = useState(bookStore.authors.find(a => a.id === book.authorId));
     const [price, setPrice] = useState(book.price || "");
     const [image, setImage] = useState("");
+    // const [categories, setCategories] = useState(Object.fromEntries(getBookCategories(book.id).map(c => {
+    //     return [c.id, c.name];
+    // })) || {});
+    const [categories, setCategories] = useState({});
 
     const [titleError, setTitleError] = useState("");
     const [authorError, setAuthorError] = useState("");
@@ -30,11 +34,33 @@ const UpdateBook = observer((props) => {
             .then(authors => {
                 bookStore.setAuthors(authors);
             });
+
+        getCategories()
+            .then(categories => {
+                bookStore.setCategories(categories);
+            })
+
+        getBookCategories(book.id)
+            .then(categories => {
+                setCategories(Object.fromEntries((categories).map(c => {
+                    return [c.id, c.name];
+                })))
+            })
     }, [props]);
 
 
     const selectFile = (e) => {
         setImage(e.target.files[0]);
+    }
+
+    const addCategory = (category) => {
+        setCategories({...categories, [category.id]: category.name})
+    }
+
+    const removeCategory = (category) => {
+        let newCategories = {...categories};
+        delete newCategories[category.id];
+        setCategories(newCategories);
     }
 
 
@@ -89,6 +115,9 @@ const UpdateBook = observer((props) => {
 
         updateBook(book.id, formData)
             .then(newBook => {
+                updateBookCategories(newBook.id, Object.keys(categories))
+                    .then(newBookCategories => {});
+
                 if (props.reload) {
                     props.reload(newBook);
                 }
@@ -120,6 +149,11 @@ const UpdateBook = observer((props) => {
         setSelectedAuthor(bookStore.authors.find(a => a.id === book.authorId));
         setPrice(book.price);
         setImage("");
+        // setCategories(Object.fromEntries(getBookCategories(book.id).map(c => {
+        //     return [c.id, c.name];
+        // })));
+
+        setCategories({});
 
         setTitleError("");
         setAuthorError("");
@@ -164,6 +198,30 @@ const UpdateBook = observer((props) => {
                             })}
                         />
                         <ErrorLabel>{authorError}</ErrorLabel>
+                    </InputGroup>
+
+                    <InputGroup>
+                        <Dropdown
+                            trigger={<Control
+                                value={Object.values(categories).join()}
+                                placeholder="Select book categories"
+                                readOnly={true}
+                                style={{cursor: 'pointer'}} 
+                            />}
+
+                            menu={bookStore.categories.map(c => {
+                                return (
+                                    <button 
+                                        onClick={() => {(c.id in categories) ? removeCategory(c) : addCategory(c)}} 
+                                        style={{background: (c.id in categories ? 'gray' : 'inherit')}}
+                                    >
+                                        {c.name}
+                                    </button>
+                                )
+                            })}
+
+                            closeOnClick={false}
+                        />
                     </InputGroup>
 
                     <InputGroup style={{marginTop: '20px'}}>
