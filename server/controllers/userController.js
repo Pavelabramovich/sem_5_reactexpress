@@ -86,8 +86,8 @@ class UserController {
     async getById(req, res) {
         const {id} = req.params;
  
-        const users = await UserRepository.getById(id);
-        return res.json(users)
+        const user = await UserRepository.getById(id);
+        return res.json(user)
     }
 
     async update(req, res, next) {
@@ -114,6 +114,77 @@ class UserController {
         } catch (e) {
             return next(ApiError.badRequest(e.message));
         }
+    }
+
+    async getProviders(req, res) {
+        let users = await UserRepository.getProviders();
+
+        return res.json(users);
+    }
+
+    async isProvider(req, res) {
+        const {id} = req.params;
+ 
+        const isProvider = await UserRepository.isProvider(id);
+        return res.json(isProvider)
+    }
+
+    async addProvider(req, res) {
+        const {id} = req.params;
+ 
+        const user = await UserRepository.addProvider(id);
+        return res.json(user)
+    }
+
+    async removeProvider(req, res) {
+        try {
+            const {id} = req.params;
+            
+            const result = await UserRepository.removeProvider(id);
+        
+            res.status(204).json();
+        } catch (e) {
+            return next(ApiError.badRequest(e.message));
+        }
+    }
+
+    async addBookToCart(req, res, next) {
+        try {
+            const {userId} = req.params;
+            const {bookId} = req.params;
+
+            const newCategories = await UserRepository.addBookToCart(userId, bookId);
+            return res.json(newCategories);
+            
+        } catch (e) {
+            return next(ApiError.badRequest(e.message));
+        }
+    }
+
+    async removeBookFromCart(req, res, next) {
+        try {
+            const {userId} = req.params;
+            const {bookId} = req.params;
+
+            const result = await UserRepository.removeBookFromCart(userId, bookId);
+            return res.json(result);
+            
+        } catch (e) {
+            return next(ApiError.badRequest(e.message));
+        }
+    }
+
+    async getUserCartItems(req, res, next) {
+        const {id} = req.params;
+        let cartItems = await UserRepository.getUserCartItems(id);
+        return res.json(cartItems);
+    }
+
+    async fullOrder(req, res, next) {
+        const {userId} = req.params;
+
+        const result = await UserRepository.fullOrder(userId);
+        return res.json(result)
     }
 }
 

@@ -24,11 +24,6 @@ const CategoryBar = observer(() => {
     useEffect(() => {
         getCategories()
             .then(categories => {
-                // bookStore.setCategories(categories.map(async (c) => {
-                //     c.books = await getCategoryBooks(c.id);
-                //     return c;
-                // }));
-
                 bookStore.setCategories(categories);
             })
     }, []);
@@ -36,8 +31,6 @@ const CategoryBar = observer(() => {
     async function onChange(category) {
         const categoryBooks = await getCategoryBooks(category.id);
         category.books = categoryBooks;
-
-        //alert(categoryBooks)
 
         bookStore.selectCategory(category); 
         forceUpdate();

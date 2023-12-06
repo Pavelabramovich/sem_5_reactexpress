@@ -102,6 +102,37 @@ class CouponRepository {
         }
     };
 
+    static async getByUserId(id) {
+        if (!id) {
+            throw new Error("No id");
+        }
+
+        try {
+            return await new Promise(function (resolve, reject) {
+                let query = String.raw
+                `SELECT
+                    c.id,
+                    c.discount
+                    
+                    FROM coupons c
+                    JOIN users u ON u.coupon_id = c.id AND u.id = ${id};`
+
+                pool.query(query, (error, results) => {
+                    if (error) {
+                        reject(error);
+                    }
+                    if (results && results.rows) {
+                        resolve(results.rows[0]);
+                    } else {
+                        reject(new Error("No results found"));
+                    }
+                });
+            });
+        } catch (error_1) {
+            console.error(error_1);
+            throw new Error("Internal server error");
+        }
+    }
 
     static async update(id, discount) {
         return new Promise(function (resolve, reject) {

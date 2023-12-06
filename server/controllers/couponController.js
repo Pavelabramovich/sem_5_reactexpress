@@ -23,6 +23,13 @@ class CouponController {
         return res.json(coupons);
     }
 
+    async getByUserId(req, res, next) {
+        const {id} = req.params;
+ 
+        const books = await CouponRepository.getByUserId(id);
+        return res.json(books)
+    }
+
     async update(req, res, next) {
         try {
             const {id} = req.params;

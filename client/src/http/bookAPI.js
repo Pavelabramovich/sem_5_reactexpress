@@ -42,13 +42,24 @@ export const getBookCategories = async (id) => {
     return data;
 }
 
+export const getBookProviders = async (id) => {
+    const {data} = await $host.get(`api/book/${id}/providers`)
+    return data;
+}
+
 export const getCategoryBooks = async (id) => {
     const {data} = await $host.get(`api/category/${id}/books`)
     return data;
 }
 
+
 export const updateBookCategories = async (id, categoriesId) => {
     const {data} = await $authHost.post(`api/book/${id}/categories`, {categoriesId})
+    return data;
+}
+
+export const updateBookProviders = async (id, providersId) => {
+    const {data} = await $authHost.post(`api/book/${id}/providers`, {providersId})
     return data;
 }
 

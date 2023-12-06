@@ -77,6 +77,29 @@ export const deleteRole = async (id) => {
     return data;
 }
 
+export const getProviders = async (id) => {
+    const {data} = await $authHost.get(`api/user/providers`);
+    return data;
+}
+
+
+export const isProvider = async (id) => {
+    const {data} = await $authHost.get(`api/user/${id}/provider`);
+    return data;
+}
+
+
+export const addProvider = async (id) => {
+    const {data} = await $authHost.post(`api/user/${id}/provider`);
+    return data;
+}
+
+export const removeProvider = async (id) => {
+    const {data} = await $authHost.delete(`api/user/${id}/provider`);
+    return data;
+}
+
+
 
 
 export const createCoupon = async (discount) => {
@@ -89,6 +112,11 @@ export const getCoupons = async () => {
     return data;
 }
 
+export const getCouponByUserId = async (id) => {
+    const {data} = await $host.get(`api/coupon/user/${id}`);
+    return data;
+}
+
 export const updateCoupon = async (id, coupon) => {
     const {data} = await $authHost.patch(`api/coupon/${id}`, coupon);
     return data;
@@ -96,5 +124,26 @@ export const updateCoupon = async (id, coupon) => {
 
 export const deleteCoupon = async (id) => {
     const {data} = await $authHost.delete(`api/coupon/${id}`);
+    return data;
+}
+
+export const addBookToCart = async (userId, bookId) => {
+    const {data} = await $authHost.post(`api/user/${userId}/cart/${bookId}`);
+    return data;
+}
+
+export const removeBookFromCart = async (userId, bookId) => {
+    const {data} = await $authHost.delete(`api/user/${userId}/cart/${bookId}`);
+    return data;
+}
+
+export const getUserCartItems = async (userId) => {
+    const {data} = await $authHost.get(`api/user/${userId}/cart`);
+    return data;
+}
+
+export const fullOrder = async (userId) => {
+    //alert(userId);
+    const {data} = await $authHost.post(`api/user/${userId}/order`);
     return data;
 }

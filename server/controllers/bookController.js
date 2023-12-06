@@ -103,12 +103,38 @@ class BookController {
         }
     }
 
+
+    async updateProviders(req, res, next) {
+        try {
+            const {id} = req.params;
+            const {providersId} = req.body;
+
+            const newProviders = await BookRepository.updateProviders(id, providersId);
+            return res.json(newProviders);
+            
+        } catch (e) {
+            return next(ApiError.badRequest(e.message));
+        }
+    }
+
     async getCategories(req, res, next) {
         try {
             const {id} = req.params;
             
             const categories = await BookRepository.getCategories(id);
             return res.json(categories);
+            
+        } catch (e) {
+            return next(ApiError.badRequest(e.message));
+        }
+    }
+
+    async getProviders(req, res, next) {
+        try {
+            const {id} = req.params;
+            
+            const providers = await BookRepository.getProviders(id);
+            return res.json(providers);
             
         } catch (e) {
             return next(ApiError.badRequest(e.message));

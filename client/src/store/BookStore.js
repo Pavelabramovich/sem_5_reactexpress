@@ -7,6 +7,7 @@ export default class BookStore {
 
         this._authors = [];
         this._categories = [];
+        this._providers = [];
         this._pattern = "";
 
         this._selectedAuthor = null;
@@ -21,6 +22,10 @@ export default class BookStore {
 
     setCategories(categories) {
         this._categories = categories;
+    }
+
+    setProviders(providers) {
+        this._providers = providers;
     }
 
     setBooks(books) {
@@ -61,5 +66,9 @@ export default class BookStore {
 
     get pattern() {
         return this._pattern;
+    }
+
+    get providers() {
+        return this._providers;
     }
 }

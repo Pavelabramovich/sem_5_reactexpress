@@ -121,8 +121,6 @@ class CategoryRepository {
                     reject(error);
                 }
                 if (results && results.rows) {
-                    console.log(results.rows)
-                    console.log("-------------------------------------------------")
                     resolve(results.rows);
                 } else {
                     reject(new Error("No results found"));

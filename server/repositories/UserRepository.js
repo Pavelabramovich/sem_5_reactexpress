@@ -116,14 +116,16 @@ class UserRepository {
 
     static async update(id, user) {
         return new Promise(function (resolve, reject) {
-            const {login, password, roleId} = user;
-            const fields = {login, password, role_id: roleId};
+            const {login, password, roleId, couponId} = user;
+            const fields = {login, password, role_id: roleId, coupon_id: couponId};
 
             let query = "UPDATE users SET";
 
             for (let field in fields) {
                 if (fields[field]) {
                     query += String.raw` "${field}" = '${fields[field]}',`;
+                } else if (fields[field] === null) {
+                    query += String.raw` "${field}" = NULL,`;
                 }
             }
 
@@ -146,6 +148,36 @@ class UserRepository {
         });
     };
 
+    static async addBookToCart(userId, bookId) {
+        return new Promise(function (resolve, reject) {
+            let query = `CALL add_book_to_cart_by_user_id(${userId}, ${bookId});`;
+
+
+            pool.query(query, (error, results) => {
+                if (error) {
+                    reject(error);
+                }
+
+                resolve(`Books added to cart.`);
+            });
+        });
+    }
+
+    static async removeBookFromCart(userId, bookId) {
+        return new Promise(function (resolve, reject) {
+            let query = `CALL remove_book_from_cart(${userId}, ${bookId});`;
+
+
+            pool.query(query, (error, results) => {
+                if (error) {
+                    reject(error);
+                }
+
+                resolve(`Books removed from to cart.`);
+            });
+        });
+    }
+
 
     static async delete(id) {
         return new Promise(function (resolve, reject) {
@@ -161,6 +193,133 @@ class UserRepository {
             );
         });
     };
+
+
+    static async getProviders() {
+        try {
+            return await new Promise(function (resolve, reject) {
+                let query = String.raw
+                `SELECT *  
+                
+                        FROM users u 
+                        WHERE u.id IN (SELECT p.user_ptr_id FROM providers p);`;
+
+                pool.query(query, (error, results) => {
+                    if (error) {
+                        reject(error);
+                    }
+                    if (results && results.rows) {
+                        resolve(results.rows.map(roleIdToCamelCase));
+                    } else {
+                        reject(new Error("No results found"));
+                    }
+                });
+            });
+        } catch (error_1) {
+            console.error(error_1);
+            throw new Error("Internal server error");
+        }
+    }
+
+
+    static async isProvider(id) {
+        if (!id) {
+            throw new Error("No Id");
+        }
+
+        try {
+            return await new Promise(function (resolve, reject) {
+                let query = String.raw`SELECT * FROM providers p WHERE p."user_ptr_id" = '${id}'`
+
+                pool.query(query, (error, results) => {
+                    if (error) {
+                        reject(error);
+                    }
+                    if (results && results.rows) {
+                        resolve(!!results.rows.length);
+                    } else {
+                        reject(new Error("No results found"));
+                    }
+                });
+            });
+        } catch (error_1) {
+            console.error(error_1);
+            throw new Error("Internal server error");
+        }
+    }
+
+    static async addProvider(id) {
+        return new Promise(function (resolve, reject) {
+            pool.query(
+                String.raw
+                    `INSERT INTO providers (user_ptr_id)  
+                     VALUES ('${id}') ON CONFLICT ("user_ptr_id") DO NOTHING;`,
+                (error, results) => {
+                    if (error) {
+                        reject(error);
+                    }
+                    if (results && results.rows) {
+                        resolve(results.rows[0]);
+                    } else {
+                        reject(new Error("No results found"));
+                    }
+                }   
+            );
+        });
+    }
+
+    static async removeProvider(id) {
+        return new Promise(function (resolve, reject) {
+            pool.query(
+                `DELETE FROM providers WHERE user_ptr_id = ${id}`,
+                (error, results) => {
+                    if (error) {
+                        reject(error);
+                    }
+                    
+                    resolve(`Provider deleted with ID: ${id}`);
+                }
+            );
+        });
+    }
+
+
+    static async getUserCartItems(userId) {
+        try {
+            return await new Promise(function (resolve, reject) {
+                let query = String.raw`SELECT * FROM select_books_by_user_cart(${userId});`;
+                pool.query(query, (error, results) => {
+                    if (error) {
+                        reject(error);
+                    }
+                    if (results && results.rows) {
+                        resolve(results.rows);
+                    } else {
+                        reject(new Error("No results found"));
+                    }
+                });
+            });
+        } catch (error_1) {
+            console.error(error_1);
+            throw new Error("Internal server error");
+        }
+    };
+
+
+    static async fullOrder(id) {
+        return new Promise(function (resolve, reject) {
+            pool.query(
+                `CALL create_full_order(${id});`,
+                (error, results) => {
+                    if (error) {
+                        reject(error);
+                    }
+                    
+                    resolve(`Provider deleted with ID: ${id}`);
+                }
+            );
+        });
+    }
 }
 
 

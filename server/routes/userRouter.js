@@ -13,9 +13,21 @@ router.post('/login', controller.login)
 router.get('/auth', auth, controller.isAuthorized);
 
 router.get('/', controller.getAll);
+router.get('/providers', controller.getProviders);
 router.get('/:id', controller.getById);
 
 router.patch('/:id', checkRole(2), controller.update);
 router.delete('/:id', checkRole(2), controller.delete);
+
+router.get('/:id/cart', auth, controller.getUserCartItems)
+
+router.get('/:id/provider', controller.isProvider);
+router.post('/:id/provider', controller.addProvider);
+router.delete('/:id/provider', controller.removeProvider);
+
+router.post(`/:userId/cart/:bookId`, controller.addBookToCart);
+router.delete(`/:userId/cart/:bookId`, controller.removeBookFromCart);
+
+router.post(`/:userId/order`, controller.fullOrder);
 
 module.exports = router;

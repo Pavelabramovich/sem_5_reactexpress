@@ -5,7 +5,9 @@ import Button from '../../Button';
 import Dropdown from '../../Dropdown';
 import { InputGroup, Control, ErrorLabel, TextControl } from '../../Control';
 import { Context } from '../../../index';
-import { getAuthors, updateBook, getBooks, getCategories, updateBookCategories, getBookCategories } from '../../../http/bookAPI';
+import { getAuthors, updateBook, getBooks, getCategories, updateBookCategories, getBookCategories, updateBookProviders } from '../../../http/bookAPI';
+import { getBookProviders } from "../../../http/bookAPI";
+import { getProviders } from "../../../http/userAPI";
 import { observer } from 'mobx-react-lite';
 
 
@@ -24,6 +26,7 @@ const UpdateBook = observer((props) => {
     //     return [c.id, c.name];
     // })) || {});
     const [categories, setCategories] = useState({});
+    const [providers, setProviders] = useState({});
 
     const [titleError, setTitleError] = useState("");
     const [authorError, setAuthorError] = useState("");
@@ -40,10 +43,22 @@ const UpdateBook = observer((props) => {
                 bookStore.setCategories(categories);
             })
 
+        getProviders()
+            .then(providers => {
+                bookStore.setProviders(providers);
+        })
+
         getBookCategories(book.id)
             .then(categories => {
                 setCategories(Object.fromEntries((categories).map(c => {
                     return [c.id, c.name];
+                })))
+            })
+        
+        getBookProviders(book.id)
+            .then(providers => {
+                setProviders(Object.fromEntries((providers).map(p => {
+                    return [p.id, p.login];
                 })))
             })
     }, [props]);
@@ -61,6 +76,16 @@ const UpdateBook = observer((props) => {
         let newCategories = {...categories};
         delete newCategories[category.id];
         setCategories(newCategories);
+    }
+
+    const addProvider = (provider) => {
+        setProviders({...providers, [provider.id]: provider.login})
+    }
+
+    const removeProvider = (provider) => {
+        let newProviders = {...providers};
+        delete newProviders[provider.id];
+        setProviders(newProviders);
     }
 
 
@@ -118,6 +143,9 @@ const UpdateBook = observer((props) => {
                 updateBookCategories(newBook.id, Object.keys(categories))
                     .then(newBookCategories => {});
 
+                updateBookProviders(newBook.id, Object.keys(providers))
+                    .then(newProvidersBooks => {});
+
                 if (props.reload) {
                     props.reload(newBook);
                 }
@@ -149,10 +177,6 @@ const UpdateBook = observer((props) => {
         setSelectedAuthor(bookStore.authors.find(a => a.id === book.authorId));
         setPrice(book.price);
         setImage("");
-        // setCategories(Object.fromEntries(getBookCategories(book.id).map(c => {
-        //     return [c.id, c.name];
-        // })));
-
         setCategories({});
 
         setTitleError("");
@@ -216,6 +240,30 @@ const UpdateBook = observer((props) => {
                                         style={{background: (c.id in categories ? 'gray' : 'inherit')}}
                                     >
                                         {c.name}
+                                    </button>
+                                )
+                            })}
+
+                            closeOnClick={false}
+                        />
+                    </InputGroup>
+
+                    <InputGroup>
+                        <Dropdown
+                            trigger={<Control
+                                value={Object.values(providers).join()}
+                                placeholder="Select book providers"
+                                readOnly={true}
+                                style={{cursor: 'pointer'}} 
+                            />}
+
+                            menu={bookStore.providers.map(p => {
+                                return (
+                                    <button 
+                                        onClick={() => {(p.id in providers) ? removeProvider(p) : addProvider(p)}} 
+                                        style={{background: (p.id in providers ? 'gray' : 'inherit')}}
+                                    >
+                                        {p.login}
                                     </button>
                                 )
                             })}

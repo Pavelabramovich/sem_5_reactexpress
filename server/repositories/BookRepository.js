@@ -187,6 +187,36 @@ class BookRepository {
         });
     }
 
+    static async updateProviders(id, providersId) {
+        return new Promise(function (resolve, reject) {
+            let query = String.raw`DELETE FROM providers_books WHERE book_id = ${id};`
+
+            if (providersId.length) {
+                
+                query += `INSERT INTO providers_books (book_id, provider_id) VALUES`
+            
+                providersId.forEach(providerId => {
+                    query += ` (${id}, ${providerId}),`
+                });
+
+                if (query.endsWith(',')) {
+                    query = query.slice(0, -1);
+                }
+
+                query += String.raw` ON CONFLICT ("book_id", "provider_id") DO NOTHING;`
+            }
+
+            pool.query(query, (error, results) => {
+                if (error) {
+                    reject(error);
+                }else {
+                    resolve(true);
+                } 
+            });
+            
+        });
+    }
+
 
     static async getCategories(id) {
         return new Promise(function (resolve, reject) {
@@ -198,6 +228,33 @@ class BookRepository {
                 FROM books_categories bc
                      JOIN books b ON bc.book_id = b.id AND b.id = '${id}'
                      JOIN categories c ON bc.category_id = c.id;`;
+
+            pool.query(query, (error, results) => {
+                if (error) {
+                    reject(error);
+                }
+                if (results && results.rows) {
+                    resolve(results.rows);
+                } else {
+                    reject(new Error("No results found"));
+                }
+            });
+        });
+    }
+
+
+    static async getProviders(id) {
+        return new Promise(function (resolve, reject) {
+            let query = String.raw
+            `SELECT 
+            u.id,
+            u.login,
+            u.role_id,
+            u.coupon_id  
+            
+            FROM providers_books pb
+            JOIN books b ON pb.book_id = b.id AND b.id = '${id}' 
+            JOIN users u ON pb.provider_id = u.id;`
 
             pool.query(query, (error, results) => {
                 if (error) {
