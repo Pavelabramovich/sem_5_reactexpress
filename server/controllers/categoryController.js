@@ -23,6 +23,18 @@ class CategoryController {
         return res.json(categories);
     }
 
+    async getBooks(req, res, next) {
+        try {
+            const {id} = req.params;
+            
+            const books = await CategoryRepository.getBooks(id);
+            return res.json(books);
+            
+        } catch (e) {
+            return next(ApiError.badRequest(e.message));
+        }
+    }
+
     async update(req, res, next) {
         try {
             const {id} = req.params;

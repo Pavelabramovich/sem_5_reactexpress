@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import AuthorBar from '../components/AuthorBar';
+import CategoryBar from '../components/CategoryBar';
 import BookList from '../components/BookList';
 import { InputGroup, Control, ErrorLabel, TextControl } from '../components/Control';
 import { Context } from '../index';
@@ -25,12 +26,19 @@ const Shop = observer(() => {
         bookStore.setPattern("");
     }, []);
 
-    useEffect(() => {
-        getBooks(bookStore.selectedAuthor?.id)
-            .then(books => {
-                bookStore.setBooks(books.rows);
-            });
-    }, [bookStore.selectedAuthor])
+    // useEffect(() => {
+    //     getBooks(bookStore.selectedAuthor?.id)
+    //         .then(books => {
+    //             bookStore.setBooks(books.rows);
+    //         });
+    // }, [bookStore.selectedAuthor])
+
+    // useEffect(() => {
+    //     getBooks(bookStore.selectedAuthor?.id)
+    //         .then(books => {
+    //             bookStore.setBooks(books.rows);
+    //         });
+    // }, [bookStore.selectedCategory])
 
     
 
@@ -44,12 +52,13 @@ const Shop = observer(() => {
                         onChange={ev => {setSearch(ev.target.value); bookStore.setPattern(ev.target.value);}} 
                     />
                 </InputGroup>
-                
-                <div style={{width: 'calc(100% /2)'}}>
-                    <AuthorBar />
-                </div>
-                <div style={{width: 'calc(100% /2)'}}>
-                    {/* <AuthorBar /> */}
+                <div style={{display: 'flex'}}>
+                    <div style={{width: 'calc(100% /2)'}}>
+                        <AuthorBar />
+                    </div>
+                    <div style={{width: 'calc(100% /2)'}}>
+                        <CategoryBar />
+                    </div>
                 </div>
             </div>
 

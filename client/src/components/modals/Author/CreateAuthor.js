@@ -18,6 +18,7 @@ const CreateAuthor = (props) => {
     function onAdd() {
         if (name === "") {
             setNameError("Enter author name");
+            return;
         }
 
         createAuthor(name)

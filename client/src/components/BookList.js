@@ -36,13 +36,20 @@ const BookList = observer(() => {
     let books = bookStore.books;
     const pattern = bookStore.pattern;
     const selectedAuthor = bookStore.selectedAuthor;
+    const selectedCategory = bookStore.selectedCategory;
 
     books = books.filter(b => (pattern === "")
                             ? true
                             : b.title.toUpperCase().startsWith(pattern.toUpperCase()));
     
     books = books.filter(b => selectedAuthor ? b.authorId === selectedAuthor.id : true);
-    
+
+    if (selectedCategory && Object.keys(selectedCategory).length) {
+        books = books.filter(b => (selectedCategory?.id && selectedCategory.books) 
+            ? selectedCategory.books.map(b => b.id).includes(b.id) 
+            : true);
+    }
+
     return (
         <div style={{display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)'}}>
             {books.map(b => 

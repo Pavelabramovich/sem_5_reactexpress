@@ -1,48 +1,47 @@
-import styles from "./UpdateCategory.module.css";
+import styles from "./UpdateCoupon.module.css";
 import { useState, useContext, useEffect } from 'react';
 import Modal from '../Modal';
 import Button from '../../Button';
 import { InputGroup, Control, ErrorLabel } from '../../Control';
-import { updateCategory } from "../../../http/bookAPI";
+import { updateCoupon } from "../../../http/userAPI";
 import { observer } from 'mobx-react-lite';
 import { Context } from '../../../index';
-import { getCategoris, updateBook, getBooks } from '../../../http/bookAPI';
+import { getCoupons, updateBook, getBooks } from '../../../http/userAPI';
 
 
-const UpdateCategory = observer((props) => {
+const UpdateCoupon = observer((props) => {
     const isOpen = props.isOpen;
     const setIsOpen = props.setIsOpen;
-    const {bookStore} = useContext(Context);
-    const category = props.category || {};
+    const {userStore} = useContext(Context);
+    const coupon = props.coupon || {};
 
-    const [name, setName] = useState(category.name || "");
-    const [nameError, setNameError] = useState("");
+    const [discount, setDiscount] = useState(coupon.discount || "");
+    const [discountError, setDiscountError] = useState("");
 
-    
     function onUpdate() {
-        if (name === "") {
-            setNameError("Enter category name");
+        if (discount === "") {
+            setDiscountError("Enter discount");
             return;
         }
 
-        updateCategory(category.id, {name})
-            .then(newCategory => {
+        updateCoupon(coupon.id, {discount})
+            .then(newCoupon => {
                 if (props.reload) {
-                    props.reload(newCategory)
+                    props.reload(newCoupon)
                 }
 
-                setName(newCategory.name);
-                setNameError("");
+                setDiscount(newCoupon.discount);
+                setDiscountError("");
                 setIsOpen(false);
             })
             .catch(e => {
-                setNameError(JSON.stringify(e));
+                setDiscountError(JSON.stringify(e));
             });
     }
 
     function onCancel() {
-        setName(category.name);
-        setNameError("");
+        setDiscount(coupon.discount);
+        setDiscountError("");
         setIsOpen(false);
     }
 
@@ -50,17 +49,19 @@ const UpdateCategory = observer((props) => {
         <Modal isOpen={isOpen} setIsOpen={setIsOpen} onClose={onCancel}>
             <div>
                 <div className={styles.header}>
-                    <h5 className={styles.heading}>Update category</h5>
+                    <h5 className={styles.heading}>Update coupon</h5>
                 </div>
             
                 <div className={styles.content}>
                     <InputGroup>
                         <Control
-                            value={name}
-                            placeholder="Change category name"
-                            onChange={ev => {setName(ev.target.value); setNameError("");}} 
+                            value={discount}
+                            type="number"
+                            min="1" max="100" 
+                            placeholder="Enter discount"
+                            onChange={ev => {setDiscount(ev.target.value); setDiscountError("");}} 
                         />
-                        <ErrorLabel>{nameError}</ErrorLabel>
+                        <ErrorLabel>{discountError}</ErrorLabel>
                     </InputGroup>
                 </div>
                 <div className={styles.actions}>
@@ -79,4 +80,4 @@ const UpdateCategory = observer((props) => {
 });
 
 
-export default UpdateCategory;
+export default UpdateCoupon;

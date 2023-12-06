@@ -76,3 +76,25 @@ export const deleteRole = async (id) => {
     const {data} = await $authHost.delete(`api/role/${id}`);
     return data;
 }
+
+
+
+export const createCoupon = async (discount) => {
+    const {data} = await $authHost.post('api/coupon', {discount});
+    return data;
+}
+
+export const getCoupons = async () => {
+    const {data} = await $host.get('api/coupon');
+    return data;
+}
+
+export const updateCoupon = async (id, coupon) => {
+    const {data} = await $authHost.patch(`api/coupon/${id}`, coupon);
+    return data;
+}
+
+export const deleteCoupon = async (id) => {
+    const {data} = await $authHost.delete(`api/coupon/${id}`);
+    return data;
+}

@@ -29,8 +29,7 @@ const Dropdown = ({ trigger, menu, closeOnClick }) => {
                                     
                                     if (closeOnClick === undefined || closeOnClick === true) {
                                         setOpen(false);
-                                    }
-                                    
+                                    } 
                                 },
                             })}
                         </li>

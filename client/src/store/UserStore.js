@@ -8,6 +8,7 @@ export default class UserStore {
 
         this._users = [];
         this._roles = [];
+        this._coupons = [];
 
         makeAutoObservable(this);
     }
@@ -28,6 +29,10 @@ export default class UserStore {
         this._users = users;
     }
 
+    setCoupons(coupons) {
+        this._coupons = coupons;
+    }
+
     get isAuth() {
         return this._isAuth;
     }
@@ -42,5 +47,9 @@ export default class UserStore {
 
     get users() {
         return this._users;
+    }
+
+    get coupons() {
+        return this._coupons;
     }
 }

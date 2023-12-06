@@ -1,45 +1,44 @@
-import styles from "./CreateRole.module.css";
+import styles from "./CreateCoupon.module.css";
 import { useState, useContext } from 'react'
 import Modal from '../Modal';
 import Button from '../../Button';
 import { Context } from '../../../index';
 import { InputGroup, Control, ErrorLabel } from '../../Control';
+import { createCoupon, getCoupons } from "../../../http/userAPI";
 
-import { createRole, getRoles } from "../../../http/userAPI";
 
-
-const CreateRole = (props) => {
+const CreateCoupon = (props) => {
     const {userStore} = useContext(Context);
     const isOpen = props.isOpen;
     const setIsOpen = props.setIsOpen;
 
-    const [name, setName] = useState("");
-    const [nameError, setNameError] = useState("");
+    const [discount, setDiscount] = useState(0);
+    const [discountError, setDiscountError] = useState("");
 
     function onAdd() {
-        if (name === "") {
-            setNameError("Enter role name");
+        if (discount === "") {
+            setDiscountError("Enter discount");
             return;
         }
 
-        createRole(name)
-            .then(role => {
-                getRoles()
-                    .then(roles => {
-                        userStore.setRoles(roles);
+        createCoupon(discount)
+            .then(coupon => {
+                getCoupons()
+                    .then(coupons => {
+                        userStore.setCoupons(coupons);
                     });
 
-                setName("");
+                setDiscount("");
                 setIsOpen(false);
             })
             .catch(e => {
-                setNameError("Role with this name already exists");
+                setDiscountError("Coupon wuth same discount already exists");
             });
     }
 
     function onCancel() {
-        setName("");
-        setNameError("");
+        setDiscount("");
+        setDiscountError("");
         setIsOpen(false);
     }
 
@@ -47,17 +46,18 @@ const CreateRole = (props) => {
         <Modal isOpen={isOpen} setIsOpen={setIsOpen} onClose={onCancel}>
             <div>
                 <div className={styles.header}>
-                    <h5 className={styles.heading}>Add role</h5>
+                    <h5 className={styles.heading}>Add coupon</h5>
                 </div>
             
                 <div className={styles.content}>
                     <InputGroup>
                         <Control
-                            value={name}
-                            placeholder="Enter new role name"
-                            onChange={ev => {setName(ev.target.value); setNameError("");}} 
+                            type="number"
+                            min="1" max="100" 
+                            placeholder="Enter discount"
+                            onChange={ev => { setDiscount(+ev.target.value); setDiscountError("")}} 
                         />
-                        <ErrorLabel>{nameError}</ErrorLabel>
+                        <ErrorLabel>{discountError}</ErrorLabel>
                     </InputGroup>
                 </div>
                 <div className={styles.actions}>
@@ -75,4 +75,5 @@ const CreateRole = (props) => {
     )
 }
 
-export default CreateRole;
+
+export default CreateCoupon;

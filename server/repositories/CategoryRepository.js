@@ -102,6 +102,35 @@ class CategoryRepository {
         }
     };
 
+    static async getBooks(id) {
+        return new Promise(function (resolve, reject) {
+            let query = String.raw
+            `SELECT 
+                b.id AS id,
+                b.title AS title,
+                b.author_id AS authorId,
+                b.price AS price,
+                b.image AS image
+                
+                FROM books_categories bc
+                     JOIN books b ON bc.book_id = b.id 
+                     JOIN categories c ON bc.category_id = c.id AND c.id = '${id}';`;
+
+            pool.query(query, (error, results) => {
+                if (error) {
+                    reject(error);
+                }
+                if (results && results.rows) {
+                    console.log(results.rows)
+                    console.log("-------------------------------------------------")
+                    resolve(results.rows);
+                } else {
+                    reject(new Error("No results found"));
+                }
+            });
+        });
+    }
+
 
     static async update(id, name) {
         return new Promise(function (resolve, reject) {

@@ -18,6 +18,7 @@ const CreateCategory = (props) => {
     function onAdd() {
         if (name === "") {
             setNameError("Enter category name");
+            return;
         }
 
         createCategory(name)

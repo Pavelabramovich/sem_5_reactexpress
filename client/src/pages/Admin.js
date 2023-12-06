@@ -8,6 +8,7 @@ import { Context } from '../index';
 import AdminAuthorList from '../components/tables/AdminAuthorList';
 import AdminUserList from '../components/tables/AdminUserList';
 import AdminCategoryList from '../components/tables/AdminCategoryList';
+import AdminCouponList from '../components/tables/AdminCouponList';
 
 
 const Admin = observer(() => {
@@ -28,6 +29,8 @@ const Admin = observer(() => {
                     ? <AdminUserList />
                 : adminStore.selectedEntityId == 4
                     ? <AdminCategoryList />
+                : adminStore.selectedEntityId == 5
+                    ? <AdminCouponList />
                 :
                     <></>  
                 }  

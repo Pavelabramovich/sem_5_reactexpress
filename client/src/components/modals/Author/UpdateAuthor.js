@@ -21,6 +21,7 @@ const UpdateAuthor = observer((props) => {
     function onUpdate() {
         if (name === "") {
             setNameError("Enter author name");
+            return;
         }
 
         updateAuthor(author.id, {name})

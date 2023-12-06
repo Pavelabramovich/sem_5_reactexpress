@@ -1,31 +1,22 @@
 const pool = require('../db');
 
 
-const roleIdToCamelCase = (user) => {
-    user.roleId = user.role_id; 
-    delete user.role_id; 
-    return user;
-}
+class CouponRepository {
 
-
-
-class UserRepository {
-
-    static async create(user) {
+    static async create(coupon) {
         return new Promise(function (resolve, reject) {
-            const {login, password, roleId, couponId} = user;
-            
+            const {discount} = coupon;
 
             pool.query(
                 String.raw
-                    `INSERT INTO users (login, password, "role_id" ${ couponId ? ', coupon_id' : ''})  
-                     VALUES ('${login}', '${password}', '${roleId}' ${couponId ? `, ${couponId}` : ''}) RETURNING *`,
+                    `INSERT INTO coupons (discount)  
+                     VALUES ('${discount}') RETURNING *`,
                 (error, results) => {
                     if (error) {
                         reject(error);
                     }
                     if (results && results.rows) {
-                        resolve(results.rows.map(roleIdToCamelCase)[0]);
+                        resolve(results.rows[0]);
                     } else {
                         reject(new Error("No results found"));
                     }
@@ -35,19 +26,17 @@ class UserRepository {
     };
 
 
-    static async getAll(roleId) {
+    static async getAll() {
         try {
             return await new Promise(function (resolve, reject) {
-                let query = roleId 
-                    ? String.raw`SELECT * FROM users u WHERE u."role_id" = ${roleId}`
-                    : String.raw`SELECT * FROM users u`;
+                let query = String.raw`SELECT * FROM coupons`;
 
                 pool.query(query, (error, results) => {
                     if (error) {
                         reject(error);
                     }
                     if (results && results.rows) {
-                        resolve(results.rows.map(roleIdToCamelCase));
+                        resolve(results.rows);
                     } else {
                         reject(new Error("No results found"));
                     }
@@ -61,20 +50,20 @@ class UserRepository {
 
 
     static async getById(id) {
-        if (!id || !/^[0-9]*$/.test(`${id}`)) {
+        if (!id) {
             throw new Error("No id");
         }
 
         try {
             return await new Promise(function (resolve, reject) {
-                let query = String.raw`SELECT * FROM users u WHERE u."id" = '${id}'`
+                let query = String.raw`SELECT * FROM coupons c WHERE c."id" = ${id}`
 
                 pool.query(query, (error, results) => {
                     if (error) {
                         reject(error);
                     }
                     if (results && results.rows) {
-                        resolve(results.rows.map(roleIdToCamelCase)[0]);
+                        resolve(results.rows[0]);
                     } else {
                         reject(new Error("No results found"));
                     }
@@ -87,21 +76,21 @@ class UserRepository {
     };
 
 
-    static async getByLogin(login) {
-        if (!login) {
-            throw new Error("No login");
+    static async getByDiscount(discount) {
+        if (!discount) {
+            throw new Error("No DisCount");
         }
 
         try {
             return await new Promise(function (resolve, reject) {
-                let query = String.raw`SELECT * FROM users u WHERE u."login" = '${login}'`
+                let query = String.raw`SELECT * FROM coupons c WHERE c."discount" = '${discount}'`
 
                 pool.query(query, (error, results) => {
                     if (error) {
                         reject(error);
                     }
                     if (results && results.rows) {
-                        resolve(results.rows.map(roleIdToCamelCase)[0]);
+                        resolve(results.rows[0]);
                     } else {
                         reject(new Error("No results found"));
                     }
@@ -114,31 +103,20 @@ class UserRepository {
     };
 
 
-    static async update(id, user) {
+    static async update(id, discount) {
         return new Promise(function (resolve, reject) {
-            const {login, password, roleId} = user;
-            const fields = {login, password, role_id: roleId};
-
-            let query = "UPDATE users SET";
-
-            for (let field in fields) {
-                if (fields[field]) {
-                    query += String.raw` "${field}" = '${fields[field]}',`;
-                }
+            if (!discount) {
+                reject(new Error("No discount"));
             }
 
-            if (query.endsWith(',')) {
-                query = query.slice(0, -1);
-            }
-
-            query += ` WHERE id = ${id} RETURNING *`;
+            let query = `UPDATE coupons SET discount = '${discount}' WHERE id = ${id} RETURNING *`;
 
             pool.query(query, (error, results) => {
                 if (error) {
                     reject(error);
                 }
                 if (results && results.rows) {
-                    resolve(results.rows.map(roleIdToCamelCase)[0]);
+                    resolve(results.rows[0]);
                 } else {
                     reject(new Error("No results found"));
                 }
@@ -150,13 +128,13 @@ class UserRepository {
     static async delete(id) {
         return new Promise(function (resolve, reject) {
             pool.query(
-                `DELETE FROM users WHERE id = ${id}`,
+                `DELETE FROM coupons WHERE id = ${id}`,
                 (error, results) => {
                     if (error) {
                         reject(error);
                     }
                     
-                    resolve(`User deleted with ID: ${id}`);
+                    resolve(`Coupon deleted with ID: ${id}`);
                 }
             );
         });
@@ -164,4 +142,4 @@ class UserRepository {
 }
 
 
-module.exports = UserRepository;
+module.exports = CouponRepository;

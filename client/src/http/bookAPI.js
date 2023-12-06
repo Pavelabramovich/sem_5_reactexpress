@@ -39,7 +39,11 @@ export const updateBook = async (id, book) => {
 
 export const getBookCategories = async (id) => {
     const {data} = await $host.get(`api/book/${id}/categories`)
-    //alert(data);
+    return data;
+}
+
+export const getCategoryBooks = async (id) => {
+    const {data} = await $host.get(`api/category/${id}/books`)
     return data;
 }
 
