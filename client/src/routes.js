@@ -5,12 +5,14 @@ import Register from "./pages/Register";
 import BookDetails from "./pages/BookDetails"
 import Cart from "./pages/Cart"
 
-import { ADMIN_URL, SHOP_URL, LOGIN_URL, REGISTRATION_URL, BOOK_URL, CART_URL } from "./utils/urls";
+import { ADMIN_URL, SHOP_URL, LOGIN_URL, REGISTRATION_URL, BOOK_URL, CART_URL, ORDERS_URL } from "./utils/urls";
+import Orders from "./pages/Orders";
 
 
 export const authRoutes = {
     [ADMIN_URL]: Admin,
     [CART_URL]: Cart,
+    [ORDERS_URL]: Orders
 }
 
 export const publicRoutes = {

@@ -7,7 +7,7 @@ import { observer } from 'mobx-react-lite';
 import { useState } from 'react'
 import styles from './NavBar.module.css';
 
-import { SHOP_URL, LOGIN_URL, ADMIN_URL, REGISTRATION_URL, CART_URL } from '../utils/urls';
+import { SHOP_URL, LOGIN_URL, ADMIN_URL, REGISTRATION_URL, CART_URL, ORDERS_URL } from '../utils/urls';
 
 
 const Navbar = observer(() => {
@@ -53,6 +53,9 @@ const Navbar = observer(() => {
                 }  
                 <li onClick={removeActive}>
                   <NavLink className={styles.navLink} to={CART_URL}>Cart</NavLink>
+                </li>
+                <li onClick={removeActive}>
+                  <NavLink className={styles.navLink} to={ORDERS_URL}>Orders</NavLink>
                 </li>
                 <li onClick={removeActive}>
                   <NavLink className={styles.navLink} to={SHOP_URL} onClick={logOut}>Logout</NavLink>

@@ -161,6 +161,20 @@ class UserController {
         }
     }
 
+    async createReview(req, res, next) {
+        try {
+            const {userId, bookId} = req.params;
+            const {text} = req.body;
+
+            const result = await UserRepository.createReview(userId, bookId, text);
+      
+            return res.json(result);
+            
+        } catch (e) {
+            return next(ApiError.badRequest(e.message));
+        }
+    }
+
     async removeBookFromCart(req, res, next) {
         try {
             const {userId} = req.params;
@@ -185,6 +199,29 @@ class UserController {
 
         const result = await UserRepository.fullOrder(userId);
         return res.json(result)
+    }
+
+    async getReviews(req, res, next) {
+        const {bookId} = req.params;
+
+        const result = await UserRepository.getReviews(bookId);
+        return res.json(result);
+    }
+
+    async getOrders(req, res, next) {
+        const {userId} =req.params;
+
+        const result = await UserRepository.getOrders(userId);
+        return res.json(result);
+
+       // router.get('/:userId/orders', controller.getOrders);
+    }
+
+    async getOrderInfo(req, res, next) {
+        const {orderId} =req.params;
+
+        const result = await UserRepository.getOrderInfo(orderId);
+        return res.json(result);
     }
 }
 

@@ -3,8 +3,33 @@ import { useParams } from 'react-router-dom';
 import { Context } from '../index';
 import styles from './BookDetails.module.css';
 import { getBook, getBookProviders } from '../http/bookAPI';
-import { getCouponByUserId, addBookToCart } from '../http/userAPI';
+import { getCouponByUserId, addBookToCart, getReviews } from '../http/userAPI';
 import Button from '../components/Button';
+import CreateReview from '../components/modals/Review/CreateReview';
+
+
+function ReviewItem(props) {
+    return (
+        <div
+            {...props} 
+            className={styles.cartItem} 
+            style={{display: 'flex', justifyContent: 'space-between'}}
+        >
+            <span style={{display: 'flex'}}>
+
+                <div style={{display: 'flex', whiteSpace: 'nowrap'}}>
+                    <div style={{alignSelf: 'center'}}>{props.login}</div>
+                </div>
+
+                <div style={{display: 'flex', whiteSpace: 'nowrap', marginLeft: '10px'}}>
+                    <div style={{alignSelf: 'center'}}>{props.text}</div>
+                </div>          
+            </span>
+        </div>
+    );
+}
+
+
 
 const BookDetails = () => {
     const {userStore} = useContext(Context);
@@ -14,6 +39,10 @@ const BookDetails = () => {
 
     const [coupon, setCoupon] = useState(null);
     const [providers, setProviders] = useState([]);
+    const [trigger, setTrigger] = useState("");
+    const [reviews, setReviews] = useState([]);
+
+    const [isReviewCreating, setIsReviewCreating] = useState(false);
 
     useEffect(() => {
         getBookProviders(id)
@@ -21,12 +50,19 @@ const BookDetails = () => {
                 setProviders(providers);
         })
 
+        
+
         getBook(id)
             .then(book => {
+                getReviews(id)
+                     .then(r => {
+                        setReviews(r);
+                     });
+
                 setBook(book);    
 
-                if (book.id) {
-                    getBookProviders(book.id)
+                if (book?.id) {
+                    getBookProviders(book?.id)
                         .then(providers => {
                             setProviders(providers);
                         })
@@ -41,7 +77,7 @@ const BookDetails = () => {
                 })
         }
 
-    }, [])
+    }, [trigger])
 
     function onAdd() {
         addBookToCart(user.id, book.id).then(r => {});
@@ -73,20 +109,45 @@ const BookDetails = () => {
                     
                 </div>
 
-                
+                {user.id && 
+                    <>
+                        <Button 
+                            style={{background: 'green'}}
+                            onClick={() => {onAdd()}}
+                        >
+                            Add to cart
+                        </Button>
 
-                {user.id && <Button 
-                    style={{background: 'green'}}
-                    onClick={() => {onAdd()}}
-                >
-                    Add to cart
-                </Button>}
+                        <Button 
+                            style={{background: 'blue'}} 
+                            onClick={() => setIsReviewCreating(true)}
+                        >
+                            Create review
+                        </Button>
+
+                        <CreateReview
+                            book={book}
+                            isOpen={isReviewCreating} 
+                            setIsOpen={setIsReviewCreating} 
+                            reload={() => {setTrigger(trigger + Math.random())}}
+                        />
+                    </>
+                }
 
                 <h2>{providers.length ? 'Providers' : ''}</h2>
 
                 <span style={{fontSize: '20px', wordWrap: 'break-word', wordBreak: 'break-all', marginTop: '35px'}}>
                     {providers.map(p => p.login).join(', ')}
                 </span>
+
+                {reviews.sort((a, b) => a.title.length -  b.title.length).map(r => 
+                <ReviewItem 
+                    key={r.title} 
+
+                    login={r.login}
+                    text={r.text}
+                />
+            )}
             </div>
         </div>
     );

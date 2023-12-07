@@ -143,7 +143,29 @@ export const getUserCartItems = async (userId) => {
 }
 
 export const fullOrder = async (userId) => {
-    //alert(userId);
     const {data} = await $authHost.post(`api/user/${userId}/order`);
+    return data;
+}
+
+
+export const createReview = async (userId, bookId, text) => {
+    const {data} = await $authHost.post(`api/user/review/${userId}/${bookId}`, {text})
+    return data;
+}
+
+export const getReviews = async (bookId) => {
+    const {data} = await $host.get(`api/user/review/${bookId}`)
+    return data;
+}
+
+
+export const getOrders = async (userId) => {
+    const {data} = await $host.get(`api/user/${userId}/orders`)
+    return data;
+}
+
+
+export const getOrderInfo = async (orderId) => {
+    const {data} = await $authHost.get(`api/user/orderInfo/${orderId}`);
     return data;
 }

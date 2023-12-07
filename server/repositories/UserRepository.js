@@ -315,10 +315,117 @@ class UserRepository {
                         reject(error);
                     }
                     
-                    resolve(`Provider deleted with ID: ${id}`);
+                    resolve(`Order created with ID: ${id}`);
                 }
             );
         });
+    }
+
+    static async createReview(userId, bookId, text) {
+        return new Promise(function (resolve, reject) {
+            pool.query(
+                `INSERT INTO reviews (user_id, book_id, text)  
+                 VALUES ('${userId}', '${bookId}', '${text}');`,
+                (error, results) => {
+                    if (error) {
+                        reject(error);
+                    }
+                    
+                    resolve(`Review created`);
+                }
+            );
+        });
+    }
+
+    static async getOrders(userId) {
+        try {
+            return await new Promise(function (resolve, reject) {
+                let query = String.raw
+                    `SELECT
+                        o.id AS id,
+                        o.time AS time
+
+                        FROM users u
+                        JOIN orders o ON o.user_id = u.id AND u.id = ${userId}`;
+                
+                pool.query(query, (error, results) => {
+                    if (error) {
+                        reject(error);
+                    }
+                    if (results && results.rows) {
+                        resolve(results.rows);
+                    } else {
+                        reject(new Error("No results found"));
+                    }
+                });
+            });
+        } catch (error_1) {
+            console.error(error_1);
+            throw new Error("Internal server error");
+        }
+    }
+
+    static async getReviews(bookId) {
+        try {
+            return await new Promise(function (resolve, reject) {
+                let query = String.raw
+                    `SELECT 
+                        b.title AS title,
+                        r.text AS text,
+                        u.login AS login
+
+                        FROM reviews r
+                        JOIN books b ON b.id = r.book_id AND b.id = ${bookId}
+                        JOIN users u ON u.id = r.user_id;`;
+                pool.query(query, (error, results) => {
+                    if (error) {
+                        reject(error);
+                    }
+                    if (results && results.rows) {
+                        resolve(results.rows);
+                    } else {
+                        reject(new Error("No results found"));
+                    }
+                });
+            });
+        } catch (error_1) {
+            console.error(error_1);
+            throw new Error("Internal server error");
+        }
+    }
+
+    //getOrderInfo
+
+
+    static async getOrderInfo(orderId) {
+        try {
+            return await new Promise(function (resolve, reject) {
+                let query = String.raw
+                    `SELECT 
+                        o.id AS id,
+                        u.login AS login,
+                        b.title AS title,
+                        ob.count AS count
+                        
+                        FROM orders o
+                        JOIN users u ON u.id = o.user_id
+                        JOIN orders_books ob ON ob.order_id = o.id AND o.id = ${orderId}
+                        JOIN books b ON b.id = ob.book_id;`;
+                pool.query(query, (error, results) => {
+                    if (error) {
+                        reject(error);
+                    }
+                    if (results && results.rows) {
+                        resolve(results.rows);
+                    } else {
+                        reject(new Error("No results found"));
+                    }
+                });
+            });
+        } catch (error_1) {
+            console.error(error_1);
+            throw new Error("Internal server error");
+        }
     }
 }
 

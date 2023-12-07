@@ -27,7 +27,14 @@ router.delete('/:id/provider', controller.removeProvider);
 
 router.post(`/:userId/cart/:bookId`, controller.addBookToCart);
 router.delete(`/:userId/cart/:bookId`, controller.removeBookFromCart);
-
+ 
+router.get('/:userId/orders', controller.getOrders);
 router.post(`/:userId/order`, controller.fullOrder);
+
+router.get('/review/:bookId', controller.getReviews);
+router.post('/review/:userId/:bookId', controller.createReview)
+
+router.get('/orderInfo/:orderId', controller.getOrderInfo);
+
 
 module.exports = router;

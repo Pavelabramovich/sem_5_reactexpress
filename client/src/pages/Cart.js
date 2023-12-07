@@ -44,22 +44,7 @@ function CartItem(props) {
                     onClick={() =>{ addBookToCart(props.userid, props.bookid); props.onClick() }}
                 >
                     AddOne
-                </Button>
-
-                {/* <Button 
-                    style={{width: '95%', marginLeft: '10px', background: 'blue'}} 
-                    onClick={() => setIsOrderCreating(true)}
-                >
-                    Create order
-                </Button>
-
-                <CreateOrder 
-                    //category={category} 
-                    isOpen={isOrderCreating} 
-                    setIsOpen={setIsOrderCreating} 
-                  //  reload={setCategory}
-                /> */}
-                
+                </Button>                
             </span>
         </div>
     );
@@ -108,7 +93,7 @@ const Cart = () => {
                 userid={user.id}
                 isOpen={isOrderCreating} 
                 setIsOpen={setIsOrderCreating} 
-                reload={() => setTrigger(trigger + Math.random())}
+                reload={setTrigger}
             />
         </div>
     );
